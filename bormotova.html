@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Бормотова Е.С.</title>
+    <style>
+        body { 
+            background-color: #c8e6c9; 
+            font-family: 'Comic Sans MS', cursive; 
+            margin: 0; 
+            padding: 0; 
+            min-height: 100vh; 
+            color: #333; 
+            position: relative;
+            overflow: hidden; /* Скрываем вылезающие за край объекты */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* --- Слой с химико-биологическими объектами --- */
+        .bg-chem-bio {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none; /* Чтобы клики проходили сквозь объекты */
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .cb-item {
+            position: absolute;
+            color: rgba(0, 0, 0, 0.95);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.4);
+            font-weight: bold;
+            font-size: 1.1rem;
+            white-space: nowrap;
+            opacity: 0.8;
+            user-select: none;
+            animation-name: fallDown;
+            animation-iteration-count: infinite;
+            animation-timing-function: linear;
+            transform-origin: center;
+            background: rgba(0, 0, 0, 0.2); /* Лёгкий фон для контраста */
+            padding: 5px 10px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        /* Разные параметры для каждого объекта */
+        .cb1 { animation-duration: 6s; animation-delay: 0s; top: -10%; left: 5%; font-size: 1.2rem; }
+        .cb2 { animation-duration: 8s; animation-delay: 2s; top: -15%; left: 20%; font-size: 1rem; transform: rotate(15deg); }
+        .cb3 { animation-duration: 7s; animation-delay: 4s; top: -20%; left: 35%; font-size: 1.3rem; }
+        .cb4 { animation-duration: 9s; animation-delay: 6s; top: -10%; left: 50%; font-size: 1.4rem; transform: rotate(-20deg); }
+        .cb5 { animation-duration: 5s; animation-delay: 1s; top: -25%; left: 65%; font-size: 1.1rem; }
+        .cb6 { animation-duration: 10s; animation-delay: 3s; top: -15%; left: 80%; font-size: 1.5rem; transform: rotate(25deg); }
+        .cb7 { animation-duration: 7s; animation-delay: 5s; top: -30%; left: 15%; font-size: 1.2rem; }
+        .cb8 { animation-duration: 8s; animation-delay: 7s; top: -20%; left: 40%; font-size: 1.3rem; transform: rotate(-30deg); }
+        .cb9 { animation-duration: 6s; animation-delay: 2s; top: -35%; left: 70%; font-size: 1.1rem; }
+        .cb10 { animation-duration: 9s; animation-delay: 4s; top: -10%; left: 90%; font-size: 1.4rem; }
+        .cb11 { animation-duration: 7s; animation-delay: 6s; top: -25%; left: 25%; font-size: 1.2rem; transform: rotate(35deg); }
+        .cb12 { animation-duration: 8s; animation-delay: 8s; top: -15%; left: 55%; font-size: 1.3rem; }
+        .cb13 { animation-duration: 6s; animation-delay: 3s; top: -40%; left: 10%; font-size: 1.1rem; }
+        .cb14 { animation-duration: 10s; animation-delay: 5s; top: -20%; left: 30%; font-size: 1.5rem; transform: rotate(-40deg); }
+        .cb15 { animation-duration: 7s; animation-delay: 7s; top: -30%; left: 60%; font-size: 1.2rem; }
+        .cb16 { animation-duration: 8s; animation-delay: 9s; top: -10%; left: 85%; font-size: 1.3rem; transform: rotate(45deg); }
+        .cb17 { animation-duration: 6s; animation-delay: 4s; top: -45%; left: 20%; font-size: 1.1rem; }
+        .cb18 { animation-duration: 9s; animation-delay: 6s; top: -25%; left: 45%; font-size: 1.4rem; }
+        .cb19 { animation-duration: 7s; animation-delay: 8s; top: -35%; left: 75%; font-size: 1.2rem; transform: rotate(-50deg); }
+        .cb20 { animation-duration: 8s; animation-delay: 10s; top: -15%; left: 95%; font-size: 1.3rem; }
+        .cb21 { animation-duration: 6s; animation-delay: 5s; top: -50%; left: 5%; font-size: 1.1rem; transform: rotate(55deg); }
+        .cb22 { animation-duration: 10s; animation-delay: 12s; top: -20%; left: 50%; font-size: 1.6rem; transform: rotate(-60deg); }
+
+        @keyframes fallDown {
+            from {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(110vh) rotate(360deg); /* Улетает вниз и крутится */
+                opacity: 0.3;
+            }
+        }
+
+        /* --- Основной контент --- */
+        .profile-container { 
+            background: white; 
+            border: 4px solid #4caf50; 
+            border-radius: 20px; 
+            padding: 40px; 
+            text-align: center; 
+            max-width: 600px; 
+            width: 90%; 
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2); 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center; 
+            position: relative;
+            z-index: 10; /* Поверх объектов */
+            backdrop-filter: blur(5px);
+        }
+        
+        .photo-circle { 
+            width: 200px; 
+            height: 200px; 
+            border-radius: 50%; 
+            overflow: hidden; 
+            margin-bottom: 20px; 
+            border: 3px solid #4caf50; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            background: #eee; 
+        }
+        .photo-circle img { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+        }
+        h1 { 
+            color: #2e7d32; 
+            font-size: 2.2rem; 
+            margin-bottom: 10px; 
+            text-shadow: 2px 2px 0 #fff; 
+        }
+        .subject-badge { 
+            background: #ffeb3b; 
+            color: #000; 
+            padding: 5px 15px; 
+            border-radius: 15px; 
+            font-weight: bold; 
+            margin-bottom: 25px; 
+            font-size: 0.9rem; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .bio-content { 
+            font-size: 1.25rem; 
+            line-height: 1.6; 
+            color: #444; 
+            margin-bottom: 30px; 
+            text-align: center; 
+        }
+        .back-link { 
+            padding: 12px 30px; 
+            background: #4caf50; 
+            color: white; 
+            text-decoration: none; 
+            border-radius: 50px; 
+            font-weight: bold; 
+            font-size: 1.1rem; 
+            transition: background 0.3s, transform 0.2s; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            display: inline-block;
+        }
+        .back-link:hover { 
+            background: #2e7d32;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Слой с химико-биологическими объектами -->
+    <div class="bg-chem-bio">
+        <div class="cb-item cb1">H₂O</div>
+        <div class="cb-item cb2">C₆H₁₂O₆ (Глюкоза)</div>
+        <div class="cb-item cb3">NaCl</div>
+        <div class="cb-item cb4">CO₂ + H₂O → Фотосинтез</div>
+        <div class="cb-item cb5">ДНК 🧬</div>
+        <div class="cb-item cb6">Митохондрия ⛓️</div>
+        <div class="cb-item cb7">2H₂ + O₂ → 2H₂O</div>
+        <div class="cb-item cb8">Клетка 🦠</div>
+        <div class="cb-item cb9">pH = -log[H⁺]</div>
+        <div class="cb-item cb10">Fe (Железо)</div>
+        <div class="cb-item cb11">O₂ (Кислород)</div>
+        <div class="cb-item cb12">Аминокислота 🧪</div>
+        <div class="cb-item cb13">CH₄ (Метан)</div>
+        <div class="cb-item cb14">АТФ 🔋</div>
+        <div class="cb-item cb15">CaCO₃ (Мел)</div>
+        <div class="cb-item cb16">Рибосома ⚙️</div>
+        <div class="cb-item cb17">NH₃ (Аммиак)</div>
+        <div class="cb-item cb18">Ядро клетки 🎯</div>
+        <div class="cb-item cb19">H₂SO₄ (Серная к-та)</div>
+        <div class="cb-item cb20">Липид 💧</div>
+        <div class="cb-item cb21">K (Калий)</div>
+        <div class="cb-item cb22">Фермент 🧬⚗️</div>
+    </div>
+
+    <!-- Основной контент -->
+    <div class="profile-container">
+        <!-- Если файла нет, появится заглушка с правильным именем -->
+        <div class="photo-circle">
+            <img src="Бормотова.jpg" alt="Фото" onerror="this.src='https://via.placeholder.com/200x200?text=Е.С.+Бормотова'">
+        </div>
+        <h1>Бормотова Елена Сергеевна</h1>
+        <span class="subject-badge">Химия и Биология</span>
+        <div class="bio-content">Учитель химии и биологии. Обожает показывать интересные опыты, рассказывать про устройство живых клеток и устраивать викторины на переменах.</div>
+        <a href="game3.html" class="back-link">← Назад в галерею</a>
+    </div>
+
+</body>
+</html>

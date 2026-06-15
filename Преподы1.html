@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Наши преподаватели</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #3bc194; 
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            height: 380px;
+            cursor: default;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .img-container {
+            width: 100%;
+            height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #eee; 
+            overflow: hidden;
+            position: relative;
+            z-index: 1;
+        }
+        .img-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .card:hover .img-container img {
+            transform: scale(1.05) translateY(-15px); 
+        }
+
+        .card-name {
+            padding: 15px;
+            font-weight: bold;
+            line-height: 1.4;
+            z-index: 2;
+            position: relative;
+        }
+
+        /* Затемнение и кнопки */
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s ease;
+            z-index: 3;
+            backdrop-filter: blur(3px);
+        }
+
+        .card:hover .overlay {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .view-btn {
+            background-color: #ff9800;
+            color: white;
+            padding: 10px 20px;
+            border: none; 
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            text-align: center;
+            min-width: 180px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            transition: transform 0.2s, background 0.2s;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: inline-block;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .card:hover .view-btn {
+            transform: scale(1.05);
+        }
+        
+        .view-btn:hover {
+            background-color: #e68900;
+        }
+        
+        /* Вторая кнопка зеленая */
+        .view-btn.green {
+            background-color: #4caf50;
+            margin-top: 10px;
+        }
+        .view-btn.green:hover {
+            background-color: #43a047;
+        }
+
+        .btn-container {
+            margin-top: 40px;
+            text-align: center;
+        }
+        .start-btn {
+            background-color: #4caf50;
+            color: white;
+            padding: 15px 40px;
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            display: inline-block;
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+            transition: background 0.3s;
+        }
+        .start-btn:hover {
+            background-color: #43a047;
+        }
+
+        /* --- СТИЛИ ДЛЯ МОДАЛЬНОГО ОКНА --- */
+        .modal-overlay {
+            display: none; 
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .password-input {
+            width: 100%;
+            padding: 12px;
+            margin: 20px 0;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            box-sizing: border-box;
+            outline: none;
+        }
+        .password-input:focus {
+            border-color: #764ba2;
+        }
+
+        .confirm-btn {
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.2s;
+        }
+        .confirm-btn:hover {
+            background-color: #43a047;
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #aaa;
+        }
+        .close-modal:hover { color: #000; }
+
+        .error-msg {
+            color: red;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Наши преподаватели</h1>
+
+    <div class="grid" id="teachers-list">
+        <!-- Сюда JS добавит карточки -->
+    </div>
+
+    <div class="btn-container">
+        <a href="index.html" class="start-btn">Назад в меню</a>
+    </div>
+
+    <!-- МОДАЛЬНОЕ ОКНО -->
+    <div id="authModal" class="modal-overlay">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h3 id="modal-title">Введите пароль</h3>
+            <p id="modal-subtitle" style="font-size: 0.9rem; color: #666; margin-bottom: 15px;">Для доступа к профилю преподавателя</p>
+            
+            <input type="password" id="passInput" class="password-input" placeholder="Пароль...">
+            <button class="confirm-btn" onclick="checkPassword()">Войти</button>
+            <div class="error-msg" id="errorMsg">Неверный пароль!</div>
+        </div>
+    </div>
+
+    <script>
+        // 1. Список преподавателей
+        const teachers = [
+            { name: "Слобоздина Наталья Ивановна", img: "Слобоздина.jpg", pass: "лол" },
+            { name: "Никитина Дарья Владимировна", img: "Никитина.jpg", pass: "nikitina_math" },
+            { name: "Рейтер Елена Анатольевна", img: "Рейтер.jpg", pass: "reiter_english" },
+            { name: "Бормотова Елена Сергеевна", img: "Бормотова.jpg", pass: "bormotova_code" },
+            { name: "Куличёва Галина Васильевна", img: "Галина.jpg", pass: "kulicheva_logic" },
+            { name: "Новиков Денис Васильевич", img: "Новиков.jpg", pass: "novikov_physics" },
+            { name: "Сахарова Алла Михайловна", img: "Ала.jpg", pass: "saharova_history"}, 
+            { name: "Рамазанов Рамазан Маратович", img: "Рамазанов.jpg", pass: "ramazanov_tech" },
+            { name: "Буленко Мария Валерьевна", img: "Буленко.jpg", pass: "bulenko_design" },
+            { name: "Алпатова Ирина Дмитриевна", img: "Алпатова.jpg", pass: "alpatova_stats" },
+            { name: "Сазонова Вероника Сергеевна", img: "Сазонова.jpg", pass: "Saz1313" },
+            { name: "Качурин Игорь Александрович", img: "Качурин.jpg", pass: "kachurin_robotics" }
+        ];
+
+        const list = document.getElementById('teachers-list');
+        const modal = document.getElementById('authModal');
+        const passInput = document.getElementById('passInput');
+        const errorMsg = document.getElementById('errorMsg');
+        
+        let currentTeacher = null;
+
+        teachers.forEach(teacher => {
+            const card = document.createElement('div');
+            card.className = 'card';
+
+            const hasImage = teacher.img && teacher.img !== "--------------" && teacher.img !== "";
+            // Проверка на кириллицу в именах файлов тоже важна! (см. ответ выше про картинки)
+            let imageHtml = hasImage ? `<img src="${teacher.img}" alt="${teacher.name}" onerror="this.style.display='none'">` : '';
+
+            card.innerHTML = `
+                <div class="img-container">
+                    ${imageHtml}
+                </div>
+                <div class="card-name">${teacher.name}</div>
+                
+                <div class="overlay">
+                    <!-- Кнопка входа в профиль (пароль) -->
+                    <button class="view-btn" onclick="openModal('${teacher.name}', '${teacher.pass}')">📂 Профиль преподавателя</button>
+                    
+                    <!-- ИЗМЕНЕННАЯ КНОПКА: теперь это активная кнопка -->
+                    <button class="view-btn green" onclick="goToReviewPage('${teacher.name}')">✍️ Оставить отзыв</button>
+                </div>
+            `;
+            list.appendChild(card);
+        });
+
+        // Функция открытия модального окна для пароля
+        function openModal(name, correctPass) {
+            currentTeacher = { name: name, pass: correctPass };
+            modal.style.display = 'flex';
+            passInput.value = '';
+            errorMsg.style.display = 'none';
+            passInput.focus();
+        }
+
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+        document.querySelector('.close-modal').onclick = function() {
+            modal.style.display = "none";
+        }
+
+        function checkPassword() {
+            if (!currentTeacher) return;
+
+            const userInput = passInput.value;
+            
+            if (userInput === currentTeacher.pass) {
+                const encodedName = encodeURIComponent(currentTeacher.name);
+                window.location.href = `difficulty.html?teacher=${encodedName}`;
+            } else {
+                errorMsg.style.display = 'block';
+                passInput.select();
+            }
+        }
+
+        passInput.addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                checkPassword();
+            }
+        });
+
+        // === НОВАЯ ФУНКЦИЯ: Переход на game4.html ===
+        function goToReviewPage(teacherName) {
+            // Вариант 1: Просто переход на страницу галереи студентов
+            // window.location.href = 'game4.html';
+
+            // Вариант 2 (Рекомендуемый): Передаем имя преподавателя в URL, 
+            // чтобы на странице game4.html можно было показать контекст (например, "Вы оставляете отзыв за...")
+            const encodedName = encodeURIComponent(teacherName);
+            window.location.href = `game4.html?fromTeacher=${encodedName}`;
+        }
+    </script>
+</body>
+</html>

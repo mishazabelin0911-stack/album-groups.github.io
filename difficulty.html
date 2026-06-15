@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>На выбор:</title>
+    <style>
+        body {
+            /* 2. Фон странички бордового цвета */
+            background-color: #8A2A2D; 
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; /* Разносит контент вверх и вниз */
+            align-items: center;
+            margin: 0;
+            padding: 20px;
+        }
+
+        /* Контейнер для центрирования контента */
+        .container {
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        /* Заголовок */
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 40px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            letter-spacing: 2px;
+        }
+
+        /* Блок с кнопками */
+        .buttons-grid {
+            display: grid;
+            grid-template-columns: 1fr; /* Одна колонка на мобильных */
+            gap: 20px;
+            width: 100%;
+        }
+
+        @media (min-width: 600px) {
+            .buttons-grid {
+                grid-template-columns: repeat(3, 1fr); /* Три колонки на ПК */
+            }
+        }
+
+        /* 1. Три кнопки-гиперссылки (разные цвета) */
+        a.diff-btn {
+            text-decoration: none;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            display: block;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+
+        a.diff-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+            border-color: rgba(255,255,255,0.5);
+        }
+
+        a.diff-btn:active {
+            transform: translateY(1px);
+        }
+
+        /* Цвета для кнопок */
+        .btn-easy { background: #4CAF50; }       /* Зелёный - Лёгкий */
+        .btn-medium { background: #FFC107; color: #333; } /* Жёлтый - Средний */
+        .btn-hard { background: #F44336; }       /* Красный - Сложный */
+
+        /* Нижняя часть страницы */
+        footer {
+            margin-top: auto; /* Прижимает футер к низу */
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .note {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            max-width: 400px;
+            line-height: 1.4;
+        }
+
+        /* 4. Четвёртая кнопка "В главное меню" */
+        a.back-btn {
+            text-decoration: none;
+            background: transparent;
+            color: #ff9a9e;
+            border: 2px solid #ff9a9e;
+            padding: 10px 30px;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1rem;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        a.back-btn:hover {
+            background: #ff9a9e;
+            color: #8A2A2D;
+            box-shadow: 0 5px 15px rgba(255, 154, 158, 0.4);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- 2. Текст "выберите ур сложности" -->
+        <h1>Выберите уровень сложности</h1>
+
+        <!-- 1. Три кнопки гиперссылки -->
+        <div class="buttons-grid">
+            <!-- Замени href на нужные страницы -->
+            <a href="game3.html" class="diff-btn btn-easy">Какой вы преподователь</a>
+            <a href="game4.html" class="diff-btn btn-medium">Обзор студентов из группы ССА9-125П</a>
+            <a href="game5.html" class="diff-btn btn-hard">Выбор любимчика или...... (выживет только один)</a>
+        </div>
+    </div>
+
+    <!-- 3. Примечание снизу + 4. Кнопка "В глав меню" -->
+    <footer>
+        <p class="note">
+            <strong>Примечание:</strong> Вы зашли как преподаватель. <br>
+            Будьте строги, но сердцу верны.
+        </p>
+        
+        <!-- Ссылка на главную (замените index.html на имя вашей главной страницы) -->
+        <a href="index.html" class="back-btn">← В главное меню</a>
+    </footer>
+
+</body>
+</html>

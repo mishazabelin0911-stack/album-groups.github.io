@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Наши преподаватели</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            /* Чуть более строгий фон для преподавателей */
+            background-color: #e0e0e0; 
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 25px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            height: 400px; /* Чуть выше карточки */
+            cursor: default;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .img-container {
+            width: 100%;
+            height: 260px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #ccc; 
+            overflow: hidden;
+            position: relative;
+            z-index: 1;
+        }
+        /* Заглушка, если нет фото */
+        .img-container::after {
+            content: "Нет фото";
+            color: #777;
+            font-size: 1.2rem;
+            pointer-events: none;
+        }
+        .img-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: block;
+        }
+
+        .card:hover .img-container img {
+            transform: scale(1.05) translateY(-15px); 
+        }
+
+        .card-name {
+            padding: 15px;
+            font-weight: bold;
+            line-height: 1.4;
+            z-index: 2;
+            position: relative;
+            font-size: 1rem;
+        }
+
+        /* Затемнение и кнопки */
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s ease;
+            z-index: 3;
+            backdrop-filter: blur(3px);
+        }
+
+        .card:hover .overlay {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Стили кнопок */
+        .view-btn {
+            background-color: #ff9800;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            text-align: center;
+            min-width: 160px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            transition: transform 0.2s, background 0.2s;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: inline-block;
+            cursor: pointer;
+            user-select: none;
+            border: none; /* Убираем рамку у кнопок */
+        }
+
+        /* Ссылка выглядит как кнопка */
+        .review-link {
+            background-color: #4caf50;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            text-align: center;
+            min-width: 160px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            transition: transform 0.2s, background 0.2s;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: inline-block;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+
+        .card:hover .view-btn, .card:hover .review-link {
+            transform: scale(1.05);
+        }
+        
+        .view-btn:hover { background-color: #e68900; }
+        .review-link:hover { background-color: #43a047; }
+
+        .btn-container {
+            margin-top: 40px;
+            text-align: center;
+        }
+        .start-btn {
+            background-color: #4caf50;
+            color: white;
+            padding: 15px 40px;
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            display: inline-block;
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+            transition: background 0.3s;
+        }
+        .start-btn:hover { background-color: #43a047; }
+
+        /* --- СТИЛИ ДЛЯ МОДАЛЬНОГО ОКНА (ПАРОЛЬ) --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            width: 350px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        @keyframes popIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        input[type="password"] {
+            width: 90%;
+            padding: 12px;
+            margin: 15px 0;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            outline: none;
+        }
+        input[type="password"]:focus { border-color: #764ba2; }
+        #modal-btn-submit {
+            background: #764ba2; color: white; border: none; padding: 12px 25px;
+            border-radius: 8px; cursor: pointer; font-weight: bold; width: 90%;
+        }
+        #modal-btn-cancel {
+            background: #ccc; color: black; border: none; padding: 12px 25px;
+            border-radius: 8px; cursor: pointer; font-weight: bold; width: 90%; margin-top: 10px;
+        }
+        .error-msg { color: red; font-size: 0.9em; margin-top: 10px; display: none; }
+    </style>
+</head>
+<body>
+
+    <h1>Наши преподаватели</h1>
+
+    <div class="grid" id="teachers-list">
+        <!-- Сюда JS добавит карточки -->
+    </div>
+
+    <div class="btn-container">
+        <a href="index.html" class="start-btn">Назад в меню</a>
+    </div>
+
+    <!-- МОДАЛЬНОЕ ОКНО ДЛЯ ПАРОЛЯ (для кнопки Профиль) -->
+    <div id="passwordModal" class="modal-overlay">
+        <div class="modal-content">
+            <h3 id="modal-teacher-name" style="margin-bottom: 10px;">Вход в профиль</h3>
+            <p style="font-size: 0.9em; color: #666;">Введите пароль преподавателя</p>
+            
+            <input type="password" id="pass-input" placeholder="Код доступа">
+            <button id="modal-btn-submit">Войти</button>
+            <button id="modal-btn-cancel">Отмена</button>
+            <div class="error-msg" id="modal-error">Неверный пароль!</div>
+        </div>
+    </div>
+
+    <script>
+        // 1. Список преподавателей (без паролей, так как профиль пока не нужен, или можно добавить)
+        const teachers = [
+            { name: "Слобоздина Наталья Ивановна", img: "Слобоздина.jpg" },
+            { name: "Никитина Дарья Владимировна", img: "Никитина.jpg" },
+            { name: "Рейтер Елена Анатольевна", img: "Рейтер.jpg" },
+            { name: "Бормотова Елена Сергеевна", img: "Бормотова.jpg" },
+            { name: "Куличёва Галина Васильевна", img: "Галина.jpg" },
+            { name: "Новиков Денис Васильевич", img: "Новиков.jpg" },
+            { name: "Сахарова Алла Михайловна", img: "Ала.jpg" }, 
+            { name: "Рамазанов Рамазан Маратович", img: "Рамазанов.jpg" },
+            { name: "Буленко Мария Валерьевна", img: "Буленко.jpg" },
+            { name: "Алпатова Ирина Дмитриевна", img: "Алпатова.jpg" },
+            { name: "Сазонова Вероника Сергеевна", img: "Сазонова.jpg" },
+            { name: "Качурин Игорь Александрович", img: "Качурин.jpg" }
+        ];
+
+        // Пароли для преподавателей (если вдруг захочешь сделать вход и туда)
+        // Пока они не используются в логике "Оставить отзыв", но могут пригодиться
+        const teacherPasswords = {
+            "Слобоздина Наталья Ивановна": "slobodzina_math",
+            "Никитина Дарья Владимировна": "nikitina_eng",
+            // ... можно добавить остальные, если нужно
+        };
+
+        const list = document.getElementById('teachers-list');
+        const modal = document.getElementById('passwordModal');
+        const modalName = document.getElementById('modal-teacher-name');
+        const passInput = document.getElementById('pass-input');
+        const submitBtn = document.getElementById('modal-btn-submit');
+        const cancelBtn = document.getElementById('modal-btn-cancel');
+        const errorMsg = document.getElementById('modal-error');
+
+        let currentTeacherName = ""; 
+
+        // Функция открытия модального окна
+        function openPasswordModal(name) {
+            currentTeacherName = name;
+            modalName.textContent = `Вход: ${name}`;
+            passInput.value = '';
+            errorMsg.style.display = 'none';
+            passInput.style.borderColor = '#ddd';
+            modal.style.display = 'flex';
+        }
+
+        // Закрытие модального окна
+        cancelBtn.onclick = () => { modal.style.display = 'none'; };
+
+        // Проверка пароля (если преподаватель захочет зайти в свой личный кабинет)
+        submitBtn.onclick = () => {
+            const enteredPass = passInput.value;
+            const correctPass = teacherPasswords[currentTeacherName];
+
+            if (correctPass && enteredPass === correctPass) {
+                // Если пароль верный, ведем на страницу профиля преподавателя
+                const encodedName = encodeURIComponent(currentTeacherName);
+                window.location.href = `teacher-profile.html?teacher=${encodedName}`;
+            } else if (!correctPass) {
+                alert("У этого преподавателя пока нет личного кабинета (или пароля).");
+                modal.style.display = 'none';
+            } else {
+                errorMsg.style.display = 'block';
+                passInput.style.borderColor = 'red';
+                setTimeout(() => {
+                    passInput.value = ''; passInput.style.borderColor = '#ddd'; errorMsg.style.display = 'none';
+                }, 2000);
+            }
+        };
+
+        // Генерация карточек преподавателей
+        teachers.forEach(teacher => {
+            const card = document.createElement('div');
+            card.className = 'card';
+
+            const hasImage = teacher.img && teacher.img !== "--------------" && teacher.img !== "";
+            let imageHtml = hasImage ? `<img src="${teacher.img}" alt="${teacher.name}" onerror="this.style.display='none'">` : '';
+
+            // ВАЖНО:
+            // 1. Кнопка "Профиль" вызывает JS (модалку с паролем).
+            // 2. Кнопка "Оставить отзыв" - это ТЕГ <a>. 
+            //    Мы добавляем параметр ?teacher=..., чтобы на странице отзывов знать, кому он.
+            const encodedName = encodeURIComponent(teacher.name);
+            
+            card.innerHTML = `
+                <div class="img-container">
+                    ${imageHtml}
+                </div>
+                <div class="card-name">${teacher.name}</div>
+                
+                <div class="overlay">
+                    <!-- Кнопка 1: Профиль (требует пароль) -->
+                    <div onclick="openPasswordModal('${teacher.name}')" class="view-btn">📂 Личный кабинет</div>
+                    
+                    <!-- Кнопка 2: Оставить отзыв (ГИПЕРССЫЛКА, как ты просил) -->
+                    <a href="write-review.html?teacher=${encodedName}" class="review-link">✍️ Оставить отзыв</a>
+                </div>
+            `;
+            list.appendChild(card);
+        });
+    </script>
+</body>
+</html>

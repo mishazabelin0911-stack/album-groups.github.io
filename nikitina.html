@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Никитина Д.В.</title>
+    <style>
+        body { 
+            background-color: #c8e6c9; 
+            font-family: 'Comic Sans MS', cursive; 
+            margin: 0; 
+            padding: 0; 
+            min-height: 100vh; 
+            color: #333; 
+            position: relative;
+            overflow: hidden; /* Чтобы даты не вылезали некрасиво за края */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* --- Слой с падающими датами --- */
+        .bg-dates {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none; /* Чтобы клики проходили сквозь даты */
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .date-item {
+            position: absolute;
+            color: rgba(0, 0, 0, 0.8);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            font-weight: bold;
+            font-size: 1.1rem;
+            white-space: nowrap;
+            opacity: 0.6;
+            user-select: none;
+            animation-name: fallDown;
+            animation-iteration-count: infinite;
+            animation-timing-function: linear;
+            transform-origin: center;
+        }
+
+        /* Разная скорость и задержка для каждой даты, чтобы они падали хаотично */
+        .d1 { animation-duration: 6s; animation-delay: 0s; top: -10%; left: 5%; font-size: 1.2rem; }
+        .d2 { animation-duration: 8s; animation-delay: 2s; top: -15%; left: 20%; font-size: 1rem; transform: rotate(10deg); }
+        .d3 { animation-duration: 7s; animation-delay: 4s; top: -20%; left: 35%; font-size: 1.3rem; }
+        .d4 { animation-duration: 9s; animation-delay: 6s; top: -10%; left: 50%; font-size: 1.4rem; transform: rotate(-15deg); }
+        .d5 { animation-duration: 5s; animation-delay: 1s; top: -25%; left: 65%; font-size: 1.1rem; }
+        .d6 { animation-duration: 10s; animation-delay: 3s; top: -15%; left: 80%; font-size: 1.5rem; transform: rotate(20deg); }
+        .d7 { animation-duration: 7s; animation-delay: 5s; top: -30%; left: 15%; font-size: 1.2rem; }
+        .d8 { animation-duration: 8s; animation-delay: 7s; top: -20%; left: 40%; font-size: 1.3rem; transform: rotate(-25deg); }
+        .d9 { animation-duration: 6s; animation-delay: 2s; top: -35%; left: 70%; font-size: 1.1rem; }
+        .d10 { animation-duration: 9s; animation-delay: 4s; top: -10%; left: 90%; font-size: 1.4rem; }
+        .d11 { animation-duration: 7s; animation-delay: 6s; top: -25%; left: 25%; font-size: 1.2rem; transform: rotate(30deg); }
+        .d12 { animation-duration: 8s; animation-delay: 8s; top: -15%; left: 55%; font-size: 1.3rem; }
+        .d13 { animation-duration: 6s; animation-delay: 3s; top: -40%; left: 10%; font-size: 1.1rem; }
+        .d14 { animation-duration: 10s; animation-delay: 5s; top: -20%; left: 30%; font-size: 1.5rem; transform: rotate(-35deg); }
+        .d15 { animation-duration: 7s; animation-delay: 7s; top: -30%; left: 60%; font-size: 1.2rem; }
+        .d16 { animation-duration: 8s; animation-delay: 9s; top: -10%; left: 85%; font-size: 1.3rem; transform: rotate(40deg); }
+        .d17 { animation-duration: 6s; animation-delay: 4s; top: -45%; left: 20%; font-size: 1.1rem; }
+        .d18 { animation-duration: 9s; animation-delay: 6s; top: -25%; left: 45%; font-size: 1.4rem; }
+        .d19 { animation-duration: 7s; animation-delay: 8s; top: -35%; left: 75%; font-size: 1.2rem; transform: rotate(-45deg); }
+        .d20 { animation-duration: 8s; animation-delay: 10s; top: -15%; left: 95%; font-size: 1.3rem; }
+        .d21 { animation-duration: 6s; animation-delay: 5s; top: -50%; left: 5%; font-size: 1.1rem; transform: rotate(50deg); }
+        .d22 { animation-duration: 10s; animation-delay: 12s; top: -20%; left: 50%; font-size: 1.6rem; transform: rotate(-50deg); }
+
+        @keyframes fallDown {
+            from {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(110vh) rotate(360deg); /* Улетает далеко вниз и крутится */
+                opacity: 0.3;
+            }
+        }
+
+        /* --- Основной контент --- */
+        .profile-container { 
+            background: white; 
+            border: 4px solid #4caf50; 
+            border-radius: 20px; 
+            padding: 40px; 
+            text-align: center; 
+            max-width: 600px; 
+            width: 90%; 
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2); 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center; 
+            position: relative;
+            z-index: 10; /* Поверх дат */
+            backdrop-filter: blur(5px); /* Легкое размытие фона под карточкой для красоты */
+        }
+        
+        .photo-circle { 
+            width: 200px; 
+            height: 200px; 
+            border-radius: 50%; 
+            overflow: hidden; 
+            margin-bottom: 20px; 
+            border: 3px solid #4caf50; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            background: #eee; 
+        }
+        .photo-circle img { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+        }
+        h1 { 
+            color: #2e7d32; 
+            font-size: 2.2rem; 
+            margin-bottom: 10px; 
+            text-shadow: 2px 2px 0 #fff; 
+        }
+        .subject-badge { 
+            background: #ffeb3b; 
+            color: #000; 
+            padding: 5px 15px; 
+            border-radius: 15px; 
+            font-weight: bold; 
+            margin-bottom: 25px; 
+            font-size: 0.9rem; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .bio-content { 
+            font-size: 1.25rem; 
+            line-height: 1.6; 
+            color: #444; 
+            margin-bottom: 30px; 
+            text-align: center; 
+        }
+        .back-link { 
+            padding: 12px 30px; 
+            background: #4caf50; 
+            color: white; 
+            text-decoration: none; 
+            border-radius: 50px; 
+            font-weight: bold; 
+            font-size: 1.1rem; 
+            transition: background 0.3s, transform 0.2s; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            display: inline-block;
+        }
+        .back-link:hover { 
+            background: #2e7d32;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Слой с историческими датами -->
+    <div class="bg-dates">
+        <div class="date-item d1">862 г. — Призвание варягов</div>
+        <div class="date-item d2">988 г. — Крещение Руси</div>
+        <div class="date-item d3">1240 г. — Невская битва</div>
+        <div class="date-item d4">1380 г. — Куликовская битва</div>
+        <div class="date-item d5">1480 г. — Стояние на Угре</div>
+        <div class="date-item d6">1547 г. — Венчание Ивана IV</div>
+        <div class="date-item d7">1612 г. — Освобождение Москвы</div>
+        <div class="date-item d8">1703 г. — Основание Петербурга</div>
+        <div class="date-item d9">1762 г. — Восшествие Екатерины II</div>
+        <div class="date-item d10">1812 г. — Отечественная война</div>
+        <div class="date-item d11">1825 г. — Восстание декабристов</div>
+        <div class="date-item d12">1861 г. — Отмена крепостного права</div>
+        <div class="date-item d13">1905 г. — Первая русская революция</div>
+        <div class="date-item d14">1917 г. — Февральская революция</div>
+        <div class="date-item d15">1917 г. — Октябрьская революция</div>
+        <div class="date-item d16">1922 г. — Образование СССР</div>
+        <div class="date-item d17">1941 г. — Начало ВОВ</div>
+        <div class="date-item d18">1945 г. — Победа в ВОВ</div>
+        <div class="date-item d19">1957 г. — Запуск Спутника</div>
+        <div class="date-item d20">1961 г. — Полёт Гагарина</div>
+        <div class="date-item d21">1986 г. — Авария на ЧАЭС</div>
+        <div class="date-item d22">1991 г. — Распад СССР</div>
+    </div>
+
+    <!-- Основной контент -->
+    <div class="profile-container">
+        <!-- Если у тебя нет файла Никитина.jpg, замени src на заглушку ниже -->
+        <div class="photo-circle">
+            <img src="Никитина.jpg" alt="Фото" onerror="this.src='https://via.placeholder.com/200x200?text=Д.В.+Никитина'">
+        </div>
+        <h1>Никитина Дарья Владимировна</h1>
+        <span class="subject-badge">История</span>
+        <div class="bio-content">Учитель истории с большим стажем. Любит преподавать и разговаривать со своими коллегами на переменах.</div>
+        <a href="game3.html" class="back-link">← Назад в галерею</a>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Битва школьных предметов!</title>
+    <style>
+        body {
+            background-color: #c8e6c9;
+            font-family: 'Comic Sans MS', 'Chalkboard SE', cursive, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2e7d32;
+            text-shadow: 2px 2px 0 #fff;
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+        }
+
+        .status-bar {
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+            background: rgba(255,255,255,0.7);
+            padding: 10px 20px;
+            border-radius: 20px;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .battle-container {
+            display: flex;
+            gap: 40px;
+            justify-content: center;
+            align-items: center;
+            min-height: 300px;
+            position: relative;
+        }
+
+        .subject-card {
+            background: white;
+            border: 5px solid #4caf50;
+            border-radius: 20px;
+            padding: 40px 30px;
+            width: 250px;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            user-select: none;
+            position: relative;
+            overflow: hidden;
+            will-change: transform, opacity, filter; 
+        }
+
+        .subject-card:hover { transform: scale(1.05); z-index: 10; }
+        .subject-card:active { transform: scale(0.95); }
+
+        .subject-card.selected {
+            border-color: #ff9800;
+            background-color: #fff3e0;
+            box-shadow: 0 0 30px rgba(255, 152, 0, 0.5);
+            transform: scale(1.1) !important;
+            z-index: 20;
+        }
+
+        .subject-card.eliminated {
+            opacity: 0.3;
+            filter: grayscale(100%);
+            cursor: not-allowed;
+            pointer-events: none;
+            transform: scale(0.8) !important;
+        }
+
+        #victory-screen {
+            display: none;
+            text-align: center;
+            background: #fff;
+            border: 10px dashed #ffeb3b;
+            padding: 50px;
+            border-radius: 50px;
+            box-shadow: 0 0 50px rgba(255, 235, 59, 0.4);
+            animation: popIn 1s ease-out;
+            z-index: 100;
+            position: relative;
+            max-width: 600px;
+            width: 90%;
+        }
+
+        #victory-screen h2 {
+            font-size: 3rem;
+            color: #fbc02d;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 0 rgba(0,0,0,0.2);
+        }
+
+        #winner-name {
+            font-size: 4rem;
+            color: #d32f2f;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            line-height: 1.2;
+            margin-bottom: 20px;
+        }
+
+        /* Блок с особым сообщением */
+        #special-message {
+            font-size: 1.8rem;
+            color: #b71c1c;
+            font-weight: bold;
+            margin-bottom: 30px;
+            min-height: 80px; /* Чтобы верстка не прыгала */
+            line-height: 1.4;
+        }
+
+        .redirect-link {
+            margin-top: 30px;
+            display: inline-block;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            background: linear-gradient(45deg, #ff5722, #ff9800);
+            color: white !important;
+            text-decoration: none;
+            border-radius: 50px;
+            font-family: inherit;
+            font-weight: bold;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 5px 15px rgba(255, 87, 34, 0.4);
+            text-align: center;
+        }
+        
+        .redirect-link:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(255, 87, 34, 0.6);
+        }
+
+        @keyframes popIn {
+            from { transform: scale(0); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="status-bar">Осталось предметов: <span id="count-display">0</span></div>
+    <h1>Битва школьных предметов!</h1>
+
+    <div class="battle-container" id="battle-area">
+        <!-- JS сам создаст здесь две карточки -->
+    </div>
+
+    <div id="victory-screen">
+        <h2>🏆 ПОБЕДИТЕЛЬ 🏆</h2>
+        <div id="winner-name">???</div>
+        
+        <!-- Сюда будет выводиться особое сообщение -->
+        <div id="special-message"></div>
+        
+        <a href="index.html" class="redirect-link">Перейти на главную</a>
+    </div>
+
+    <script>
+
+        // 👇 ВСТАВИТЬ ЭТО В САМОЕ НАЧАЛО СКРИПТА 👇
+            const urlParams = new URLSearchParams(window.location.search);
+            const studentName = urlParams.get('student');
+
+            if (studentName) {
+                console.log(`Игра запущена для студента: ${studentName}`);
+                // Тут можно добавить приветствие, если хочешь, например:
+                // document.querySelector('h1').textContent = `Битва предметов для ${studentName}!`;
+            } else {
+                console.warn('Имя студента не передано. Проверь ссылку.');
+            }
+            // 👆 ВСТАВИТЬ ЭТО В САМОЕ НАЧАЛО СКРИПТА 👆
+        const subjects = [
+            "Математика", "Русский язык", "Литература", "История", "Обществознание",
+            "Физика", "Химия", "Биология", "География", "Информатика",
+            "Английский язык", "Физкультура", "ОБЖ", "Технология", "ИЗО", "Музыка"
+        ];
+
+        let currentSubjects = []; 
+        let cardElements = []; 
+
+        const battleArea = document.getElementById('battle-area');
+        const countDisplay = document.getElementById('count-display');
+        const victoryScreen = document.getElementById('victory-screen');
+        const winnerName = document.getElementById('winner-name');
+        const specialMessage = document.getElementById('special-message');
+        
+        let isAnimating = false; 
+
+        function initGame() {
+            currentSubjects = [...subjects]; 
+            cardElements = [];
+            isAnimating = false;
+            
+            victoryScreen.style.display = 'none';
+            battleArea.style.display = 'flex';
+            specialMessage.textContent = ''; // Сброс сообщения
+            
+            renderCount();
+            pickAndRenderCards();
+        }
+
+        function renderCount() {
+            countDisplay.textContent = currentSubjects.length;
+        }
+
+        function pickAndRenderCards() {
+            if (currentSubjects.length <= 1) {
+                showVictory();
+                return;
+            }
+
+            const idx1 = Math.floor(Math.random() * currentSubjects.length);
+            let idx2 = Math.floor(Math.random() * currentSubjects.length);
+            
+            while (idx2 === idx1) {
+                idx2 = Math.floor(Math.random() * currentSubjects.length);
+            }
+
+            const subj1 = currentSubjects[idx1];
+            const subj2 = currentSubjects[idx2];
+
+            renderBattleArea(subj1, subj2);
+        }
+
+        function renderBattleArea(subj1, subj2) {
+            battleArea.innerHTML = ''; 
+            cardElements = []; 
+
+            const createCard = (subject) => {
+                const div = document.createElement('div');
+                div.className = 'subject-card';
+                div.textContent = subject;
+                div.dataset.subject = subject; 
+                div.addEventListener('click', () => handleChoice(subject));
+                return div;
+            };
+
+            const card1 = createCard(subj1);
+            const card2 = createCard(subj2);
+
+            battleArea.appendChild(card1);
+            battleArea.appendChild(card2);
+            cardElements.push(card1, card2);
+        }
+
+        function handleChoice(chosenSubject) {
+            if (isAnimating) return; 
+            isAnimating = true;
+
+            const loserSubject = (chosenSubject === cardElements[0].dataset.subject) 
+                ? cardElements[1].dataset.subject 
+                : cardElements[0].dataset.subject;
+
+            const winnerCard = cardElements.find(c => c.dataset.subject === chosenSubject);
+            const loserCard = cardElements.find(c => c.dataset.subject === loserSubject);
+
+            if (!winnerCard || !loserCard) {
+                isAnimating = false;
+                return;
+            }
+
+            winnerCard.classList.add('selected');
+            loserCard.classList.add('eliminated');
+
+            const loserIndex = currentSubjects.indexOf(loserSubject);
+            if (loserIndex > -1) {
+                currentSubjects.splice(loserIndex, 1);
+            }
+
+            renderCount();
+
+            setTimeout(() => {
+                pickAndRenderCards();
+                isAnimating = false;
+            }, 800);
+        }
+
+        function showVictory() {
+            battleArea.style.display = 'none';
+            victoryScreen.style.display = 'block';
+            
+            if(currentSubjects.length > 0) {
+                const winner = currentSubjects[0];
+                winnerName.textContent = winner;
+                
+                // === ЛОГИКА ОСОБОГО СООБЩЕНИЯ ===
+                if (winner === "Химия" || winner === "Биология") {
+                    // ЗАМЕНИ СТРОКУ НИЖЕ, ЕСЛИ ХОЧЕШЬ СВОЙ ТЕКСТ (НО ЛУЧШЕ НЕ НАДО)
+                    specialMessage.textContent = "Химия/Биология победила! Больше не смей проходить опросник ты мне больше не друг";
+                    specialMessage.style.color = "#b71c1c";
+                } else {
+                    specialMessage.textContent = ""; // Обычный победитель - тишина
+                }
+            } else {
+                winnerName.textContent = "Ничья?";
+            }
+        }
+
+        initGame();
+    </script>
+</body>
+</html>

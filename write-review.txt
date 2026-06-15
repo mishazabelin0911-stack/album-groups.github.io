@@ -1,0 +1,21 @@
+<!-- write-review.html -->
+<h2>Оставить отзыв для преподавателя</h2>
+<p id="target-teacher">Загрузка...</p>
+<textarea placeholder="Напишите ваш отзыв..."></textarea>
+<button onclick="saveReview()">Отправить</button>
+
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const teacherName = decodeURIComponent(urlParams.get('teacher'));
+    
+    if(teacherName) {
+        document.getElementById('target-teacher').innerText = "Преподавателю: " + teacherName;
+    } else {
+        document.getElementById('target-teacher').innerText = "Ошибка: Преподаватель не выбран";
+    }
+
+    function saveReview() {
+        alert("Отзыв для " + teacherName + " сохранен!");
+        // Тут будет твой код сохранения
+    }
+</script>

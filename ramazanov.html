@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Рамазан Р.М.</title>
+    <style>
+        body { 
+            background-color: #c8e6c9; 
+            font-family: 'Comic Sans MS', cursive; 
+            margin: 0; 
+            padding: 0; 
+            min-height: 100vh; 
+            color: #333; 
+            position: relative;
+            overflow: hidden; /* Скрываем вылезающие за край объекты */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* --- Слой с объектами по обществознанию --- */
+        .bg-soc {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none; /* Чтобы клики проходили сквозь объекты */
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .soc-item {
+            position: absolute;
+            color: rgba(0, 0, 0, 0.95);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.4);
+            font-weight: bold;
+            font-size: 1.1rem;
+            white-space: nowrap;
+            opacity: 0.8;
+            user-select: none;
+            animation-name: fallDown;
+            animation-iteration-count: infinite;
+            animation-timing-function: linear;
+            transform-origin: center;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 5px 10px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        /* Разные параметры для каждого объекта */
+        .s1 { animation-duration: 6s; animation-delay: 0s; top: -10%; left: 5%; font-size: 1.2rem; }
+        .s2 { animation-duration: 8s; animation-delay: 2s; top: -15%; left: 20%; font-size: 1rem; transform: rotate(15deg); }
+        .s3 { animation-duration: 7s; animation-delay: 4s; top: -20%; left: 35%; font-size: 1.3rem; }
+        .s4 { animation-duration: 9s; animation-delay: 6s; top: -10%; left: 50%; font-size: 1.4rem; transform: rotate(-20deg); }
+        .s5 { animation-duration: 5s; animation-delay: 1s; top: -25%; left: 65%; font-size: 1.1rem; }
+        .s6 { animation-duration: 10s; animation-delay: 3s; top: -15%; left: 80%; font-size: 1.5rem; transform: rotate(25deg); }
+        .s7 { animation-duration: 7s; animation-delay: 5s; top: -30%; left: 15%; font-size: 1.2rem; }
+        .s8 { animation-duration: 8s; animation-delay: 7s; top: -20%; left: 40%; font-size: 1.3rem; transform: rotate(-30deg); }
+        .s9 { animation-duration: 6s; animation-delay: 2s; top: -35%; left: 70%; font-size: 1.1rem; }
+        .s10 { animation-duration: 9s; animation-delay: 4s; top: -10%; left: 90%; font-size: 1.4rem; }
+        .s11 { animation-duration: 7s; animation-delay: 6s; top: -25%; left: 25%; font-size: 1.2rem; transform: rotate(35deg); }
+        .s12 { animation-duration: 8s; animation-delay: 8s; top: -15%; left: 55%; font-size: 1.3rem; }
+        .s13 { animation-duration: 6s; animation-delay: 3s; top: -40%; left: 10%; font-size: 1.1rem; }
+        .s14 { animation-duration: 10s; animation-delay: 5s; top: -20%; left: 30%; font-size: 1.5rem; transform: rotate(-40deg); }
+        .s15 { animation-duration: 7s; animation-delay: 7s; top: -30%; left: 60%; font-size: 1.2rem; }
+        .s16 { animation-duration: 8s; animation-delay: 9s; top: -10%; left: 85%; font-size: 1.3rem; transform: rotate(45deg); }
+        .s17 { animation-duration: 6s; animation-delay: 4s; top: -45%; left: 20%; font-size: 1.1rem; }
+        .s18 { animation-duration: 9s; animation-delay: 6s; top: -25%; left: 45%; font-size: 1.4rem; }
+        .s19 { animation-duration: 7s; animation-delay: 8s; top: -35%; left: 75%; font-size: 1.2rem; transform: rotate(-50deg); }
+        .s20 { animation-duration: 8s; animation-delay: 10s; top: -15%; left: 95%; font-size: 1.3rem; }
+        .s21 { animation-duration: 6s; animation-delay: 5s; top: -50%; left: 5%; font-size: 1.1rem; transform: rotate(55deg); }
+        .s22 { animation-duration: 10s; animation-delay: 12s; top: -20%; left: 50%; font-size: 1.6rem; transform: rotate(-60deg); }
+
+        @keyframes fallDown {
+            from {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(110vh) rotate(360deg); /* Улетает вниз и крутится */
+                opacity: 0.3;
+            }
+        }
+
+        /* --- Основной контент --- */
+        .profile-container { 
+            background: white; 
+            border: 4px solid #4caf50; 
+            border-radius: 20px; 
+            padding: 40px; 
+            text-align: center; 
+            max-width: 600px; 
+            width: 90%; 
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2); 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center; 
+            position: relative;
+            z-index: 10; /* Поверх объектов */
+            backdrop-filter: blur(5px);
+        }
+        
+        .photo-circle { 
+            width: 200px; 
+            height: 200px; 
+            border-radius: 50%; 
+            overflow: hidden; 
+            margin-bottom: 20px; 
+            border: 3px solid #4caf50; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            background: #eee; 
+        }
+        .photo-circle img { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+        }
+        h1 { 
+            color: #2e7d32; 
+            font-size: 2.2rem; 
+            margin-bottom: 10px; 
+            text-shadow: 2px 2px 0 #fff; 
+        }
+        .subject-badge { 
+            background: #ffeb3b; 
+            color: #000; 
+            padding: 5px 15px; 
+            border-radius: 15px; 
+            font-weight: bold; 
+            margin-bottom: 25px; 
+            font-size: 0.9rem; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .bio-content { 
+            font-size: 1.25rem; 
+            line-height: 1.6; 
+            color: #444; 
+            margin-bottom: 30px; 
+            text-align: center; 
+        }
+        .back-link { 
+            padding: 12px 30px; 
+            background: #4caf50; 
+            color: white; 
+            text-decoration: none; 
+            border-radius: 50px; 
+            font-weight: bold; 
+            font-size: 1.1rem; 
+            transition: background 0.3s, transform 0.2s; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            display: inline-block;
+        }
+        .back-link:hover { 
+            background: #2e7d32;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Слой с объектами по обществознанию -->
+    <div class="bg-soc">
+        <div class="soc-item s1">Конституция РФ 📜</div>
+        <div class="soc-item s2">Права человека ⚖️</div>
+        <div class="soc-item s3">Демократия</div>
+        <div class="soc-item s4">Гражданское общество</div>
+        <div class="soc-item s5">Выборы 🗳️</div>
+        <div class="soc-item s6">Закон</div>
+        <div class="soc-item s7">Социальная стратификация</div>
+        <div class="soc-item s8">Семья как институт 🏘️</div>
+        <div class="soc-item s9">Мораль и право</div>
+        <div class="soc-item s10">Экономика и общество</div>
+        <div class="soc-item s11">Социальные нормы</div>
+        <div class="soc-item s12">Дебаты 🗣️</div>
+        <div class="soc-item s13">Общественные отношения</div>
+        <div class="soc-item s14">Государство</div>
+        <div class="soc-item s15">Политическая система</div>
+        <div class="soc-item s16">Социальные роли</div>
+        <div class="soc-item s17">Социология</div>
+        <div class="soc-item s18">Этика</div>
+        <div class="soc-item s19">Общественное мнение</div>
+        <div class="soc-item s20">Гражданственность</div>
+        <div class="soc-item s21">Конституционные обязанности</div>
+        <div class="soc-item s22">Дискуссия за круглым столом 🪑</div>
+    </div>
+
+    <!-- Основной контент -->
+    <div class="profile-container">
+        <!-- Если файла нет, появится заглушка с правильным именем -->
+        <div class="photo-circle">
+            <img src="Рамазан.jpg" alt="Фото" onerror="this.src='https://via.placeholder.com/200x200?text=Р.М.+Рамазан'">
+        </div>
+        <h1>Рамазан Рамазанов Маратович</h1>
+        <span class="subject-badge">Обществознание</span>
+        <div class="bio-content">Учитель обществознания с ярким и нестандартным подходом к обучению. Любит устраивать дебаты, разбирать реальные жизненные ситуации и вдохновенно рассказывать о своём предмете.</div>
+        <a href="game3.html" class="back-link">← Назад в галерею</a>
+    </div>
+
+</body>
+</html>

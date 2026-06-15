@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Опрос КТ МТУСИ (Для преподавателей)</title>
+    <style>
+        /* Сброс отступов */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #dcf0ff; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .container {
+            text-align: center;
+            z-index: 20; 
+            position: relative;
+            max-width: 600px;
+            width: 90%;
+            padding: 20px;
+            /* Добавил margin-bottom, чтобы новая кнопка не слипалась с контентом */
+            margin-bottom: 40px; 
+        }
+
+        h1 {
+            color: #5a3a8b;
+            font-size: 2rem;
+            margin-bottom: 40px;
+            line-height: 1.3;
+            text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.7);
+        }
+
+        /* Стили для кнопок */
+        .button-group {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        a.nav-btn {
+            text-decoration: none;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            display: inline-block;
+            min-width: 200px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 20;
+        }
+
+        .btn-survey {
+            background: linear-gradient(135deg, #6a5ac4 0%, #8a2be2 100%);
+        }
+        .btn-survey:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(138, 43, 226, 0.4);
+        }
+
+        .btn-results {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+            color: #333;
+        }
+        .btn-results:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(255, 154, 158, 0.5);
+        }
+
+        /* --- НОВАЯ КНОПКА "ВЫХОД К КУРСУ" --- */
+        .back-course-btn {
+            display: inline-block;
+            text-decoration: none;
+            color: white;
+            background: linear-gradient(135deg, #2c3e50 0%, #4ca1af 100%);
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(44, 62, 80, 0.3);
+            border: none;
+            cursor: pointer;
+            margin-top: 20px; /* Отступ сверху от других кнопок */
+            z-index: 20;
+        }
+
+        .back-course-btn:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 20px rgba(76, 161, 175, 0.4);
+            background: linear-gradient(135deg, #34495e 0%, #5bc0de 100%);
+        }
+        
+        .back-course-btn:active {
+            transform: translateY(1px);
+        }
+        /* ------------------------------------- */
+
+        /* --- АНИМАЦИИ ФОНА --- */
+        
+        /* Общие стили для летающих объектов */
+        .floating-object {
+            position: absolute;
+            opacity: 0.9;
+            pointer-events: none; 
+            z-index: 1;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
+        }
+
+        /* ШАРИКИ (Горизонтальное движение) */
+        .ball {
+            border-radius: 50%;
+            animation: floatHorizontal infinite alternate;
+        }
+        
+        .ball-1 { width: 160px; height: 160px; background: rgba(255, 218, 185, 0.8); top: 10%; left: -20%; animation-duration: 10s; }
+        .ball-2 { width: 120px; height: 120px; background: rgba(255, 228, 181, 0.8); bottom: 10%; right: -15%; animation-duration: 14s; }
+        .ball-3 { width: 90px; height: 90px; background: rgba(200, 162, 200, 0.6); top: 40%; left: -10%; animation-duration: 8s; }
+        .ball-4 { width: 70px; height: 70px; background: rgba(150, 123, 182, 0.6); bottom: 30%; right: -5%; animation-duration: 12s; }
+        .ball-5 { width: 50px; height: 50px; background: rgba(255, 255, 255, 0.5); top: 50%; left: -10%; animation-duration: 9s; }
+
+        @keyframes floatHorizontal {
+            from { transform: translateX(0); }
+            to { transform: translateX(120vw); }
+        }
+
+        /* ФОТО СТУДЕНТОВ (Вертикальные прыжки) */
+        .student-bubble {
+            width: 110px;
+            height: 110px;
+            border-radius: 15px;
+            background: #fff;
+            border: 2px solid #8a2be2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            animation: bounceVertical infinite alternate;
+            transform-origin: center center; 
+        }
+
+        .student-bubble img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .student-bubble:hover img {
+            transform: scale(1.1);
+        }
+
+        .sb-1 { top: 15%; left: 5%; animation-duration: 3s; }   
+        .sb-2 { top: 25%; right: 5%; animation-duration: 4s; }  
+        .sb-3 { top: 60%; left: 10%; animation-duration: 5s; }  
+        .sb-4 { top: 70%; right: 15%; animation-duration: 3.5s; }
+        .sb-5 { top: 35%; left: 50%; animation-duration: 6s; }  
+        .sb-6 { top: 45%; right: 40%; animation-duration: 4.5s; } 
+
+        @keyframes bounceVertical {
+            from { transform: translateY(0) rotate(5deg); }
+            to { transform: translateY(-90px) rotate(-5deg); }
+        }
+
+        .no-photo-text {
+            font-size: 0.7rem;
+            color: #888;
+            text-align: center;
+            padding: 5px;
+            word-break: break-word;
+        }
+
+        .note-box {
+            background: rgba(255, 255, 255, 0.85);
+            border: 2px dashed #8a2be2;
+            border-radius: 15px;
+            padding: 15px 25px;
+            font-size: 0.9rem;
+            color: #444;
+            line-height: 1.5;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            display: inline-block;
+            max-width: 100%;
+            text-align: left;
+            backdrop-filter: blur(5px); 
+        }
+        .note-icon { font-size: 1.2rem; margin-right: 8px; vertical-align: middle; }
+    </style>
+</head>
+<body>
+
+    <!-- 1. ДЕКОРАТИВНЫЕ ШАРИКИ -->
+    <div class="floating-object ball ball-1"></div>
+    <div class="floating-object ball ball-2"></div>
+    <div class="floating-object ball ball-3"></div>
+    <div class="floating-object ball ball-4"></div>
+    <div class="floating-object ball ball-5"></div>
+
+    <!-- 2. ПУЗЫРИ С ФОТО СТУДЕНТОВ -->
+    <div class="floating-object student-bubble sb-1" data-name="Михаил Я.">
+        <img src="Михаил Я.jpg" alt="Михаил" onerror="this.style.display='none'; this.nextSibling.style.display='block'">
+        <div class="no-photo-text">Михаил Я.</div>
+    </div>
+    <div class="floating-object student-bubble sb-2" data-name="Лёха">
+        <img src="Лёха.jpg" alt="Лёха" onerror="this.style.display='none'; this.nextSibling.style.display='block'">
+        <div class="no-photo-text">Лёха</div>
+    </div>
+    <div class="floating-object student-bubble sb-3" data-name="Коля">
+        <img src="Коля.jpg" alt="Коля" onerror="this.style.display='none'; this.nextSibling.style.display='block'">
+        <div class="no-photo-text">Коля</div>
+    </div>
+    <div class="floating-object student-bubble sb-4" data-name="Некита">
+        <img src="Некита2.jpg" alt="Некита" onerror="this.style.display='none'; this.nextSibling.style.display='block'">
+        <div class="no-photo-text">Некита</div>
+    </div>
+    <div class="floating-object student-bubble sb-5" data-name="Миха">
+        <img src="Миха.jpg" alt="Миха" onerror="this.style.display='none'; this.nextSibling.style.display='block'">
+        <div class="no-photo-text">Миха</div>
+    </div>
+    <div class="floating-object student-bubble sb-6" data-name="Кирил">
+        <img src="Кирил.jpg" alt="Кирил" onerror="this.style.display='none'; this.nextSibling.style.display='block'">
+        <div class="no-photo-text">Кирил</div>
+    </div>
+
+    <script>
+        document.querySelectorAll('.student-bubble').forEach(bubble => {
+            const name = bubble.getAttribute('data-name');
+            const textEl = bubble.querySelector('.no-photo-text');
+            if(textEl) textEl.innerText = name;
+        });
+    </script>
+
+    <div class="container">
+        <h1>Опрос для тех кто в КТ МТУСИ</h1>
+        
+        <p style="margin-bottom: 30px; color: #555;">Выбери, кто ты?:</p>
+
+        <div class="button-group">
+            <a href="Преподы1.html" class="nav-btn btn-survey">преподователь</a>
+            <a href="Студенты1.html" class="nav-btn btn-results">студент</a>
+        </div>
+
+        <div class="note-box">
+            <span class="note-icon">ℹ️</span>
+            <strong>Я бы хотел:</strong> чтобы в итоге, делая этот сайт, я выиграл в нём.
+        </div>
+
+        <!-- НОВАЯ КНОПКА -->
+        <a href="indexснова.html" class="back-course-btn">← Вернуться к курсу</a>
+    </div>
+
+</body>
+</html>

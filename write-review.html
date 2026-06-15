@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Оставить отзыв</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #c8e6c9; display: flex; justify-content: center; padding-top: 50px; }
+        .form-container { background: white; padding: 30px; border-radius: 15px; width: 90%; max-width: 500px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: #2e7d32; margin-bottom: 20px; }
+        label { display: block; margin-top: 15px; font-weight: bold; color: #555; }
+        input, textarea, select { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; font-family: inherit; }
+        textarea { resize: vertical; height: 120px; }
+        button { width: 100%; padding: 12px; background: #4caf50; color: white; border: none; border-radius: 5px; font-size: 1rem; cursor: pointer; margin-top: 20px; transition: 0.3s; }
+        button:hover { background: #2e7d32; }
+        .back-link { display: block; text-align: center; margin-top: 20px; color: #4caf50; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>✍️ Написать отзыв</h2>
+        <form id="reviewForm">
+            <label>Ваше имя:</label>
+            <input type="text" id="author" required placeholder="Иван Иванов">
+            
+            <label>Оценка:</label>
+            <select id="rating" required>
+                <option value="5">★★★★★ Отлично</option>
+                <option value="4">★★★★ Хорошо</option>
+                <option value="3">★★★ Нормально</option>
+                <option value="2">★★ Плохо</option>
+                <option value="1">★ Ужасно</option>
+            </select>
+
+            <label>Текст отзыва:</label>
+            <textarea id="text" required placeholder="Что вам понравилось или не понравилось?"></textarea>
+            
+            <!-- Скрытое поле для имени преподавателя -->
+            <input type="hidden" id="teacher" value="">
+
+            <button type="submit">Отправить отзыв</button>
+        </form>
+        <a href="Преподаватели1.html" class="back-link">← Назад к преподавателям</a>
+    </div>
+
+    <script>
+        // Получаем имя преподавателя из адресной строки
+        const urlParams = new URLSearchParams(window.location.search);
+        const teacherName = decodeURIComponent(urlParams.get('teacher'));
+        document.getElementById('teacher').value = teacherName;
+
+        if (!teacherName) {
+            alert("Ошибка: Не указан преподаватель. Вернитесь назад.");
+            window.history.back();
+        }
+
+        document.getElementById('reviewForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const author = document.getElementById('author').value;
+            const rating = parseInt(document.getElementById('rating').value);
+            const text = document.getElementById('text').value;
+            
+            const newReview = {
+                author: author,
+                rating: rating,
+                text: text,
+                date: new Date().toLocaleDateString('ru-RU')
+            };
+
+            // === ЛОГИКА СОХРАНЕНИЯ ===
+            // Так как jsonbin мертв, используем localStorage (работает в браузере)
+            // Ключ формируется из имени преподавателя, чтобы отзывы не смешивались
+            const key = `reviews_${teacherName}`;
+            
+            let existingReviews = [];
+            try {
+                const stored = localStorage.getItem(key);
+                if (stored) existingReviews = JSON.parse(stored);
+            } catch (err) {
+                console.error("Ошибка чтения отзывов", err);
+            }
+
+            existingReviews.push(newReview);
+            localStorage.setItem(key, JSON.stringify(existingReviews));
+
+            alert(`Спасибо, ${author}! Ваш отзыв сохранен.`);
+            window.location.href = `difficulty.html?teacher=${encodeURIComponent(teacherName)}`; // Или куда ты хочешь вернуть
+        });
+    </script>
+</body>
+</html>

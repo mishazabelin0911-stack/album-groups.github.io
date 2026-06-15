@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title id="page-title">Галерея студентов</title>
+    <style>
+        /* --- ОБЩИЕ СТИЛИ --- */
+        body { 
+            background-color: #c8e6c9; 
+            font-family: 'Comic Sans MS', cursive; 
+            margin: 0; padding: 0; color: #333; 
+            position: relative; overflow-x: hidden;
+        }
+        .view-gallery, .view-profile { display: none; }
+        :not(.has-student) .view-gallery { display: flex !important; }
+        .has-student .view-profile { display: flex !important; }
+        .has-student .view-gallery { display: none !important; }
+
+        /* --- ГАЛЕРЕЯ --- */
+        .gallery-wrapper { width: 100%; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding-top: 40px; box-sizing: border-box; z-index: 10; position: relative; }
+        h1 { text-align: center; color: #2e7d32; text-shadow: 2px 2px 0 #fff; margin-bottom: 30px; font-size: 2.5rem; }
+        
+        /* Сетка галереи */
+        .gallery-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); 
+            gap: 25px; 
+            width: 90%; 
+            max-width: 1000px; 
+            margin-bottom: 80px; 
+        }
+
+        .student-link { text-decoration: none; color: inherit; display: block; }
+        
+        .card { 
+            background: white; 
+            border: 3px solid #4caf50; 
+            border-radius: 15px; 
+            overflow: hidden; 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1); 
+            transition: all 0.3s ease; 
+            height: 320px; /* Фиксированная высота для красоты сетки */
+            display: flex; 
+            flex-direction: column; 
+            position: relative; 
+        }
+        
+        .card:hover { 
+            transform: translateY(-10px); 
+            box-shadow: 0 20px 30px rgba(0,0,0,0.2); 
+            border-color: #ff9800; 
+        }
+        
+        .photo-area { 
+            width: 100%; 
+            height: 220px; 
+            background-color: #eee; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            overflow: hidden; 
+            position: relative; 
+        }
+        
+        .photo-area img { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+            transition: transform 0.5s ease; 
+        }
+        
+        .card:hover .photo-area img { transform: scale(1.1); }
+        
+        /* Заглушка для фото (инициалы) */
+        .initials-badge {
+            width: 100%; height: 100%;
+            display: flex; align-items: center; justify-content: center;
+            background: #ccc; color: white;
+            font-size: 3rem; font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .view-btn { 
+            margin-top: auto; 
+            padding: 12px 20px;
+            background: #4caf50; 
+            color: white; 
+            border: none; 
+            border-radius: 25px; 
+            cursor: pointer; 
+            font-family: inherit; 
+            font-weight: bold; 
+            font-size: 1rem;
+            opacity: 0; 
+            transition: opacity 0.3s; 
+            pointer-events: none; 
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .card:hover .view-btn { opacity: 1; pointer-events: auto; }
+        .card:hover .view-btn:active { transform: scale(0.95); }
+
+        .home-link { 
+            position: fixed; 
+            bottom: 20px; 
+            right: 20px; 
+            background: #d32f2f; 
+            color: white; 
+            text-decoration: none; 
+            padding: 12px 24px; 
+            border-radius: 50px; 
+            font-weight: bold; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2); 
+            z-index: 20; 
+            display: inline-block; 
+        }
+
+        /* --- ПРОФИЛЬ --- */
+        .profile-container { 
+            background: white; 
+            border: 4px solid #4caf50; 
+            border-radius: 20px; 
+            padding: 40px; 
+            text-align: center; 
+            max-width: 600px; 
+            width: 90%; 
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2); 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center; 
+            position: relative; 
+            z-index: 10; 
+            backdrop-filter: blur(5px); 
+        }
+        .photo-circle { 
+            width: 200px; 
+            height: 200px; 
+            border-radius: 50%; 
+            overflow: hidden; 
+            margin-bottom: 20px; 
+            border: 3px solid #4caf50; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            background: #eee; 
+            position: relative; 
+        }
+        .photo-circle img { width: 100%; height: 100%; object-fit: cover; }
+        .profile-h1 { color: #2e7d32; font-size: 2.2rem; margin-bottom: 10px; text-shadow: 2px 2px 0 #fff; }
+        .student-badge { 
+            background: #ffeb3b; 
+            color: #000; 
+            padding: 5px 15px; 
+            border-radius: 15px; 
+            font-weight: bold; 
+            margin-bottom: 25px; 
+            font-size: 0.9rem; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
+        }
+        .bio-content { 
+            font-size: 1.25rem; 
+            line-height: 1.6; 
+            color: #444; 
+            margin-bottom: 30px; 
+            text-align: center; 
+        }
+        
+        /* --- ОТЗЫВЫ --- */
+        .reviews-section { width: 100%; text-align: left; margin-top: 30px; border-top: 2px dashed #ccc; padding-top: 20px; }
+        .review-item { 
+            background: #f1f8e9; 
+            border-left: 5px solid #4caf50; 
+            padding: 15px; 
+            margin-bottom: 15px; 
+            border-radius: 8px; 
+            font-size: 1rem; 
+            position: relative; 
+            animation: fadeIn 0.5s; 
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .review-author { font-weight: bold; color: #2e7d32; display: block; margin-bottom: 5px; font-size: 0.9rem; }
+        
+        .add-review-btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: #ff9800;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: bold;
+            transition: 0.3s;
+            width: 100%;
+            max-width: 300px;
+        }
+        .add-review-btn:hover { background: #e65100; transform: scale(1.05); }
+        
+        .back-link { 
+            padding: 12px 30px; 
+            background: #4caf50; 
+            color: white; 
+            text-decoration: none; 
+            border-radius: 50px; 
+            font-weight: bold; 
+            font-size: 1.1rem; 
+            transition: background 0.3s, transform 0.2s; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2); 
+            margin-top: 10px;
+        }
+        .back-link:hover { background: #2e7d32; transform: scale(1.05); }
+
+        /* --- МОДАЛЬНОЕ ОКНО (Форма отзыва) --- */
+        .modal-overlay { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.7); 
+            display: none; 
+            justify-content: center; 
+            align-items: center; 
+            z-index: 1000; 
+        }
+        .modal { 
+            background: white; 
+            padding: 30px; 
+            border-radius: 15px; 
+            width: 90%; max-width: 400px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3); 
+            animation: popIn 0.3s ease; 
+            position: relative;
+        }
+        @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .modal h2 { margin-top: 0; color: #2e7d32; }
+        .modal textarea { width: 100%; height: 100px; padding: 10px; border: 2px solid #ddd; border-radius: 8px; resize: vertical; font-family: inherit; margin: 15px 0; box-sizing: border-box; }
+        .modal input { width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 8px; margin-bottom: 15px; box-sizing: border-box; font-family: inherit; }
+        .modal-buttons { display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px;}
+        .btn-cancel { background: #ccc; color: black; border: none; padding: 8px 16px; border-radius: 5px; cursor: pointer; }
+        .btn-submit { background: #4caf50; color: white; border: none; padding: 8px 16px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        .close-modal { position: absolute; top: 10px; right: 15px; font-size: 24px; cursor: pointer; color: #999; }
+        .close-modal:hover { color: #000; }
+        
+        .loading { text-align: center; padding: 20px; color: #666; font-size: 1.2rem; }
+    </style>
+</head>
+<body>
+
+    <!-- ВИД 1: ГАЛЕРЕЯ -->
+    <div class="view-gallery gallery-wrapper">
+        <h1>Наши студенты 👨‍🎓</h1>
+        <div class="gallery-grid" id="gallery-container">
+            <div class="loading">Загрузка данных...</div>
+        </div>
+        <a href="index.html" class="home-link">🏠 На главную</a>
+    </div>
+
+    <!-- ВИД 2: ПРОФИЛЬ СТУДЕНТА -->
+    <div class="view-profile" style="width: 100%; min-height: 100vh; display:flex; justify-content:center; align-items:center;">
+        <div class="profile-container">
+            <div class="photo-circle" id="profile-photo-container">
+                <img id="stud-photo" src="" alt="Фото студента">
+            </div>
+            <h1 class="profile-h1" id="stud-name">Загрузка...</h1>
+            <span class="student-badge" id="stud-group">Группа</span>
+            <div class="bio-content" id="stud-bio">Информация...</div>
+            
+            <!-- Блок отзывов -->
+            <div class="reviews-section">
+                <h3 style="color:#2e7d32;">Отзывы преподавателей:</h3>
+                <div id="reviews-list">
+                    <p style="color:#999;">Загрузка отзывов...</p>
+                </div>
+                <!-- Кнопка вызова модального окна -->
+                <button class="add-review-btn" id="open-review-modal" onclick="openModal()">📝 Оставить отзыв</button>
+            </div>
+
+            <a href="difficulty.html" class="back-link">← Назад в галерею</a>
+        </div>
+    </div>
+
+    <!-- МОДАЛЬНОЕ ОКНО (Форма написания отзыва) -->
+    <div class="modal-overlay" id="reviewModal">
+        <div class="modal">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <h2>Отзыв о студенте</h2>
+            <p id="modal-student-name" style="font-weight:bold; color:#4caf50;"></p>
+            <input type="text" id="review-author" placeholder="Ваше имя (Преподаватель)" required>
+            <textarea id="review-text" placeholder="Напишите отзыв..." required></textarea>
+            <div class="modal-buttons">
+                <button class="btn-cancel" onclick="closeModal()">Отмена</button>
+                <button class="btn-submit" onclick="saveReview()">Сохранить</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    // ================= НАСТРОЙКИ JSONBIN =================
+    const JSONBIN_CONFIG = {
+        binId: 'ВСТАВЬ_СЮДА_СВОЙ_ID_БИНА',           // <-- ВСТАВЬ СЮДА СВОЙ binId
+        secretKey: 'ВСТАВЬ_СЮДА_СВОЙ_SECRET_KEY'     // <-- ВСТАВЬ СЮДА СВОЙ secretKey
+    };
+
+    let studentsDB = []; 
+    let currentStudent = null; 
+
+    // ================= ХРАНЕНИЕ ДАННЫХ (Приоритет: LocalStorage > JSONBin) =================
+    
+    // 1. Сначала пробуем загрузить из памяти браузера
+    function loadLocalData() {
+        const saved = localStorage.getItem('students_db_local');
+        if (saved) return JSON.parse(saved);
+        return null;
+    }
+
+    // 2. Сохраняем в память браузера (работает всегда, даже без интернета)
+    function saveLocalData(data) {
+        localStorage.setItem('students_db_local', JSON.stringify(data));
+    }
+
+       // ================= РАБОТА С JSONBIN =================
+
+    async function loadFromJsonBin() {
+        try {
+            const response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_CONFIG.binId}`, {
+                method: 'GET',
+                headers: {
+                    'X-Master-Key': JSONBIN_CONFIG.secretKey,
+                    // 'X-Bin-Meta': 'false' // Обычно не нужно для получения данных
+                }
+            });
+            
+            if (!response.ok) throw new Error('Ошибка сети или доступа (возможно, бесплатный тариф не дает читать?)');
+            
+            const data = await response.json();
+            return data.record;
+        } catch (error) {
+            console.warn('⚠️ Не удалось загрузить с JSONBin. Используем локальные данные или заглушки.', error.message);
+            return null; // Возвращаем null, чтобы сработал fallback
+        }
+    }
+
+    async function saveToJsonBin(data) {
+        // Пытаемся отправить на сервер
+        try {
+            const response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_CONFIG.binId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Master-Key': JSONBIN_CONFIG.secretKey
+                },
+                body: JSON.stringify(data)
+            });
+
+            if (!response.ok) {
+                const errData = await response.json().catch(() => ({}));
+                // Если ошибка 403 (Forbidden) - это значит "Бесплатный тариф не поддерживает PUT"
+                if (response.status === 403) {
+                    console.warn('❌ JSONBin отклонил запрос (403). Скорее всего, это ограничение бесплатного тарифа на редактирование.');
+                } else {
+                    throw new Error(errData.message || 'Ошибка сети');
+                }
+            } else {
+                console.log('✅ Данные успешно сохранены на JSONBin');
+            }
+        } catch (error) {
+            console.error('❌ Критическая ошибка при сохранении на сервер:', error);
+            // Даже если сервер упал, мы не теряем данные благодаря следующему шагу
+        } finally {
+            // ГЛАВНОЕ: В любом случае (успех или провал сервера) сохраняем в браузер
+            saveLocalData(data);
+            console.log('💾 Данные также сохранены в локальное хранилище браузера.');
+        }
+    }
+
+    // ================= ИНИЦИАЛИЗАЦИЯ ПРИ ЗАГРУЗКЕ =================
+    document.addEventListener('DOMContentLoaded', async () => {
+        let loadedData = null;
+
+        // Шаг 1: Пробуем взять из памяти браузера (быстро и надежно)
+        loadedData = loadLocalData();
+
+        // Шаг 2: Если в памяти пусто, пробуем взять с сервера
+        if (!loadedData) {
+            loadedData = await loadFromJsonBin();
+        }
+
+        // Шаг 3: Если и там пусто, берем заглушки
+        if (!loadedData || !Array.isArray(loadedData)) {
+            studentsDB = getDefaultStudents();
+            // Сразу сохраняем заглушки в память, чтобы они не пропали
+            saveLocalData(studentsDB); 
+        } else {
+            studentsDB = loadedData;
+        }
+        
+        renderGallery();
+    });
+
+    function getDefaultStudents() {
+        return [
+            { name: "Ануфриев Никита Сергеевич", pass: "anufriev_mtusi", img: "Ануфриев.jpg", group: "ССА9-125П", bio: "Студент группы ССА9-125П", reviews: [] },
+            { name: "Бабичев Никита Михайлович", pass: "babichev_code", img: "Бабичев.jpg", group: "ССА9-125П", bio: "Студент группы ССА9-125П", reviews: [] },
+            { name: "Багаев Егор Борисович", pass: "bagaev_student", img: "Багаев.jpg", group: "ССА9-125П", bio: "Студент группы ССА9-125П", reviews: [] },
+            { name: "Безъязыков Дмитрий Романович", pass: "bezyazykov_lab", img: "Безъязыков.jpg", group: "ССА9-125П", bio: "Студент группы ССА9-125П", reviews: [] },
+            { name: "Буремечков Николай Андреевич", pass: "buremechkov_net", img: "Коля.jpg", group: "ССА9-125П", bio: "Студент группы ССА9-125П", reviews: [] },
+            { name: "Веденеев Алексей Игоревич", pass: "vedeneev_web", img: "Лёха.jpg", group: "ССА9-125П", bio: "Студент группы ССА9-125П", reviews: [] },
+            { name: "Грачев Даниила Андреевич", pass: "grachev_math", img: "Грачев.jpg", group: "ССА9-125П", bio: "Студент группы ССА9-125П", reviews: [] },
+            { name: "Джабборова Райхона Равшановна", pass: "dzhabborova_eng", img: "Рая2.jpg", group: "ССА9-125П", bio: "Студентка группы ССА9-125П", reviews: [] },
+            { name: "Дремов Алексей Анатольевич", pass: "dremov_cpp", img: "Дремов.jpg", group: "ССА9-125П", bio: "Студент группы ССА9-125П", reviews: [] },
+            { name: "Забелин Михаил Владимирович", pass: "бог", img: "Михаил Я.jpg", group: "ССА9-125П", bio: "Студент группы ССА9-125П", reviews: [] },
+            { name: "Иващенко Егор Олегович", pass: "ivashchenko_linux", img: "Иващенко.jpg", group: "ССА9-125П", bio: "Студент группы ССА9-125П", reviews: [] },
+            { name: "Конопатов Степан Николаевич", pass: "konopatov_java", img: "Конопатов.jpg", group: "ССА9-125П", bio: "Студент группы ССА9-125П", reviews: [] },
+            { name: "Лунин Никита Сергеевич", pass: "lunin_sql", img: "Некита2.jpg", group: "ССА9-125П", bio: "Студент группы ССА9-125П", reviews: [] },
+            { name: "Медведков Михаил Станиславович", pass: "medvedkov_db", img: "Миха.jpg", group: "ССА9-125П", bio: "Студент группы ССА9-125П", reviews: [] },
+            { name: "Мирзоева Мадина Умаралиевна", pass: "mirzoeva_design", img: "Мирзоева.jpg", group: "ССА9-125П", bio: "Студентка группы ССА9-125П", reviews: [] },
+            { name: "Новиков Пётр Алексеевич", pass: "novikov_p_algo", img: "Новиков_П.jpg", group: "ССА9-125П", bio: "Студент группы ССА9-125П", reviews: [] },
+            { name: "Сафаров Азиз Самадович", pass: "safarov_python", img: "Сафаров.jpg", group: "ССА9-125П", bio: "Студент группы ССА9-125П", reviews: [] },
+            { name: "Стешин Станислав Денисович", pass: "steshin_git", img: "Стешин.jpg", group: "ССА9-125П", bio: "Студент группы ССА9-125П", reviews: [] },
+            { name: "Устинов Даниил Владимирович", pass: "ustinov_js", img: "Устинов.jpg", group: "ССА9-125П", bio: "Студент группы ССА9-125П", reviews: [] },
+            { name: "Федюнин Владимир Константинович", pass: "fedyunin_css", img: "Федюнин.jpg", group: "ССА9-125П", bio: "Студент группы ССА9-125П", reviews: [] },
+            { name: "Шаповалов Василий Алексеевич", pass: "shapovalov_html", img: "Шаповалов.jpg", group: "ССА9-125П", bio: "Студент группы ССА9-125П", reviews: [] },
+            { name: "Шорникова Алёна Сергеевна", pass: "shornikova_ux", img: "Шорникова.jpg", group: "ССА9-125П", bio: "Студентка группы ССА9-125П", reviews: [] },
+            { name: "Юртаев Кирилл Владимирович", pass: "yurtaev_dev", img: "Юртаев.jpg", group: "ССА9-125П", bio: "Студент группы ССА9-125П", reviews: [] },
+            { name: "Янкин Георгий Данилович", pass: "yankin_api", img: "Янкин.jpg", group: "ССА9-125П", bio: "Студент группы ССА9-125П", reviews: [] }
+        ];
+    }
+
+    // ================= ОТРИСОВКА ГАЛЕРЕИ =================
+    function renderGallery() {
+        const container = document.getElementById('gallery-container');
+        container.innerHTML = '';
+
+        if (!studentsDB || studentsDB.length === 0) {
+            container.innerHTML = '<div class="loading">Студенты не найдены</div>';
+            return;
+        }
+
+        studentsDB.forEach((student, index) => {
+            const card = document.createElement('a');
+            card.className = 'student-link';
+            card.href = '#';
+            card.onclick = (e) => {
+                e.preventDefault();
+                openProfile(student);
+            };
+
+            // Генерация заглушки с инициалами, если нет фото
+            let photoSrc = student.img;
+            let initials = '';
+            if (!photoSrc || photoSrc.trim() === '') {
+                initials = `${student.name.charAt(0)}${student.name.split(' ')[1]?.charAt(0) || ''}`.toUpperCase();
+                photoSrc = ''; // Будем рендерить заглушку через CSS/HTML
+            }
+
+            card.innerHTML = `
+                <div class="card">
+                    <div class="photo-area">
+                        ${photoSrc ? `<img src="${photoSrc}" alt="${student.name}">` : `<div class="initials-badge">${initials}</div>`}
+                    </div>
+                    <button class="view-btn">Посмотреть профиль</button>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    // ================= ПРОСМОТР ПРОФИЛЯ =================
+    function openProfile(student) {
+        currentStudent = student;
+        document.body.classList.add('has-student');
+        
+        const photoContainer = document.getElementById('profile-photo-container');
+        photoContainer.innerHTML = '';
+        
+        let photoSrc = student.img;
+        let initials = '';
+        if (!photoSrc || photoSrc.trim() === '') {
+            initials = `${student.name.charAt(0)}${student.name.split(' ')[1]?.charAt(0) || ''}`.toUpperCase();
+            const badge = document.createElement('div');
+            badge.className = 'initials-badge';
+            badge.textContent = initials;
+            badge.style.width = '200px';
+            badge.style.height = '200px';
+            badge.style.borderRadius = '50%';
+            photoContainer.appendChild(badge);
+        } else {
+            const img = document.createElement('img');
+            img.id = 'stud-photo';
+            img.src = photoSrc;
+            img.alt = student.name;
+            photoContainer.appendChild(img);
+        }
+
+        document.getElementById('stud-name').textContent = student.name;
+        document.getElementById('stud-group').textContent = student.group;
+        document.getElementById('stud-bio').textContent = student.bio;
+
+        // Отрисовка отзывов
+        const reviewsList = document.getElementById('reviews-list');
+        reviewsList.innerHTML = '';
+        if (student.reviews && student.reviews.length > 0) {
+            student.reviews.forEach(rev => {
+                const div = document.createElement('div');
+                div.className = 'review-item';
+                div.innerHTML = `<span class="review-author">${rev.author}</span>${rev.text}`;
+                reviewsList.appendChild(div);
+            });
+        } else {
+            reviewsList.innerHTML = '<p style="color:#999;">Пока нет отзывов</p>';
+        }
+
+        // Обновление заголовка модального окна
+        document.getElementById('modal-student-name').textContent = student.name;
+    }
+
+    // ================= МОДАЛЬНОЕ ОКНО И ОТЗЫВЫ =================
+    const modal = document.getElementById('reviewModal');
+
+    function openModal() {
+        if (!currentStudent) {
+            alert('Сначала выберите студента из галереи!');
+            return;
+        }
+        modal.style.display = 'flex';
+        document.getElementById('modal-student-name').textContent = currentStudent.name;
+    }
+
+    function closeModal() {
+        modal.style.display = 'none';
+        document.getElementById('review-author').value = '';
+        document.getElementById('review-text').value = '';
+    }
+
+    // Закрытие по клику вне окна
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            closeModal();
+        }
+    }
+
+    function saveReview() {
+        const authorInput = document.getElementById('review-author');
+        const textInput = document.getElementById('review-text');
+        
+        const author = authorInput.value.trim();
+        const text = textInput.value.trim();
+
+        if (!author || !text) {
+            alert('Пожалуйста, заполните все поля.');
+            return;
+        }
+
+        const newReview = { author, text, date: new Date().toLocaleDateString() };
+        currentStudent.reviews.push(newReview);
+
+        // Сохраняем обновленные данные
+        saveToJsonBin(studentsDB);
+
+        closeModal();
+        openProfile(currentStudent); // Перерисовать профиль, чтобы показать новый отзыв
+    }
+
+    // Кнопка "Назад"
+    document.querySelector('.back-link').addEventListener('click', () => {
+        document.body.classList.remove('has-student');
+        currentStudent = null;
+    });
+    </script>
+</body>
+</html>

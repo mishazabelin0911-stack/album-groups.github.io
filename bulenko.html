@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Буленко М.В.</title>
+    <style>
+        body { 
+            background-color: #c8e6c9; 
+            font-family: 'Comic Sans MS', cursive; 
+            margin: 0; 
+            padding: 0; 
+            min-height: 100vh; 
+            color: #333; 
+            position: relative;
+            overflow: hidden; /* Скрываем вылезающие за край объекты */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* --- Слой с объектами по проектной деятельности --- */
+        .bg-opd {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none; /* Чтобы клики проходили сквозь объекты */
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .opd-item {
+            position: absolute;
+            color: rgba(0, 0, 0, 0.95);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.4);
+            font-weight: bold;
+            font-size: 1.1rem;
+            white-space: nowrap;
+            opacity: 0.8;
+            user-select: none;
+            animation-name: fallDown;
+            animation-iteration-count: infinite;
+            animation-timing-function: linear;
+            transform-origin: center;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 5px 10px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        /* Разные параметры для каждого объекта */
+        .o1 { animation-duration: 6s; animation-delay: 0s; top: -10%; left: 5%; font-size: 1.2rem; }
+        .o2 { animation-duration: 8s; animation-delay: 2s; top: -15%; left: 20%; font-size: 1rem; transform: rotate(15deg); }
+        .o3 { animation-duration: 7s; animation-delay: 4s; top: -20%; left: 35%; font-size: 1.3rem; }
+        .o4 { animation-duration: 9s; animation-delay: 6s; top: -10%; left: 50%; font-size: 1.4rem; transform: rotate(-20deg); }
+        .o5 { animation-duration: 5s; animation-delay: 1s; top: -25%; left: 65%; font-size: 1.1rem; }
+        .o6 { animation-duration: 10s; animation-delay: 3s; top: -15%; left: 80%; font-size: 1.5rem; transform: rotate(25deg); }
+        .o7 { animation-duration: 7s; animation-delay: 5s; top: -30%; left: 15%; font-size: 1.2rem; }
+        .o8 { animation-duration: 8s; animation-delay: 7s; top: -20%; left: 40%; font-size: 1.3rem; transform: rotate(-30deg); }
+        .o9 { animation-duration: 6s; animation-delay: 2s; top: -35%; left: 70%; font-size: 1.1rem; }
+        .o10 { animation-duration: 9s; animation-delay: 4s; top: -10%; left: 90%; font-size: 1.4rem; }
+        .o11 { animation-duration: 7s; animation-delay: 6s; top: -25%; left: 25%; font-size: 1.2rem; transform: rotate(35deg); }
+        .o12 { animation-duration: 8s; animation-delay: 8s; top: -15%; left: 55%; font-size: 1.3rem; }
+        .o13 { animation-duration: 6s; animation-delay: 3s; top: -40%; left: 10%; font-size: 1.1rem; }
+        .o14 { animation-duration: 10s; animation-delay: 5s; top: -20%; left: 30%; font-size: 1.5rem; transform: rotate(-40deg); }
+        .o15 { animation-duration: 7s; animation-delay: 7s; top: -30%; left: 60%; font-size: 1.2rem; }
+        .o16 { animation-duration: 8s; animation-delay: 9s; top: -10%; left: 85%; font-size: 1.3rem; transform: rotate(45deg); }
+        .o17 { animation-duration: 6s; animation-delay: 4s; top: -45%; left: 20%; font-size: 1.1rem; }
+        .o18 { animation-duration: 9s; animation-delay: 6s; top: -25%; left: 45%; font-size: 1.4rem; }
+        .o19 { animation-duration: 7s; animation-delay: 8s; top: -35%; left: 75%; font-size: 1.2rem; transform: rotate(-50deg); }
+        .o20 { animation-duration: 8s; animation-delay: 10s; top: -15%; left: 95%; font-size: 1.3rem; }
+        .o21 { animation-duration: 6s; animation-delay: 5s; top: -50%; left: 5%; font-size: 1.1rem; transform: rotate(55deg); }
+        .o22 { animation-duration: 10s; animation-delay: 12s; top: -20%; left: 50%; font-size: 1.6rem; transform: rotate(-60deg); }
+
+        @keyframes fallDown {
+            from {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(110vh) rotate(360deg); /* Улетает вниз и крутится */
+                opacity: 0.3;
+            }
+        }
+
+        /* --- Основной контент --- */
+        .profile-container { 
+            background: white; 
+            border: 4px solid #4caf50; 
+            border-radius: 20px; 
+            padding: 40px; 
+            text-align: center; 
+            max-width: 600px; 
+            width: 90%; 
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2); 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center; 
+            position: relative;
+            z-index: 10; /* Поверх объектов */
+            backdrop-filter: blur(5px);
+        }
+        
+        .photo-circle { 
+            width: 200px; 
+            height: 200px; 
+            border-radius: 50%; 
+            overflow: hidden; 
+            margin-bottom: 20px; 
+            border: 3px solid #4caf50; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            background: #eee; 
+        }
+        .photo-circle img { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+        }
+        h1 { 
+            color: #2e7d32; 
+            font-size: 2.2rem; 
+            margin-bottom: 10px; 
+            text-shadow: 2px 2px 0 #fff; 
+        }
+        .subject-badge { 
+            background: #ffeb3b; 
+            color: #000; 
+            padding: 5px 15px; 
+            border-radius: 15px; 
+            font-weight: bold; 
+            margin-bottom: 25px; 
+            font-size: 0.9rem; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .bio-content { 
+            font-size: 1.25rem; 
+            line-height: 1.6; 
+            color: #444; 
+            margin-bottom: 30px; 
+            text-align: center; 
+        }
+        .back-link { 
+            padding: 12px 30px; 
+            background: #4caf50; 
+            color: white; 
+            text-decoration: none; 
+            border-radius: 50px; 
+            font-weight: bold; 
+            font-size: 1.1rem; 
+            transition: background 0.3s, transform 0.2s; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            display: inline-block;
+        }
+        .back-link:hover { 
+            background: #2e7d32;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Слой с объектами по проектной деятельности -->
+    <div class="bg-opd">
+        <div class="opd-item o1">Цель проекта 🎯</div>
+        <div class="opd-item o2">Гипотеза ❓</div>
+        <div class="opd-item o3">Задачи</div>
+        <div class="opd-item o4">Исследование 🔬</div>
+        <div class="opd-item o5">Анализ данных 📊</div>
+        <div class="opd-item o6">Продукт проекта 🎁</div>
+        <div class="opd-item o7">Презентация 🖥️</div>
+        <div class="opd-item o8">Этапы работы 🪜</div>
+        <div class="opd-item o9">Источники информации 📚</div>
+        <div class="opd-item o10">Проектная папка 📁</div>
+        <div class="opd-item o11">Защита проекта 🎤</div>
+        <div class="opd-item o12">Критерии оценки ✅</div>
+        <div class="opd-item o13">Командная работа 🤝</div>
+        <div class="opd-item o14">Проблема и решение 💡</div>
+        <div class="opd-item o15">План реализации 🗓️</div>
+        <div class="opd-item o16">Результаты 🏅</div>
+        <div class="opd-item o17">Выводы 🧠</div>
+        <div class="opd-item o18">Практическая значимость</div>
+        <div class="opd-item o19">Актуальность темы</div>
+        <div class="opd-item o20">Сбор информации 📋</div>
+        <div class="opd-item o21">Оформление проекта 🎨</div>
+        <div class="opd-item o22">Успешная защита! 🎉</div>
+    </div>
+
+    <!-- Основной контент -->
+    <div class="profile-container">
+        <!-- Если файла нет, появится заглушка с правильным именем -->
+        <div class="photo-circle">
+            <img src="Буленко.jpg" alt="Фото" onerror="this.src='https://via.placeholder.com/200x200?text=М.В.+Буленко'">
+        </div>
+        <h1>Буленко Мария Валерьевна</h1>
+        <span class="subject-badge">ОПД (Проектная деятельность)</span>
+        <div class="bio-content">Учитель ОПД с историческим уклоном. Любит, когда всё сделано идеально, и часто помогает ученикам дорабатывать проекты, принимая отдельные работы даже на переменах.</div>
+        <a href="game3.html" class="back-link">← Назад в галерею</a>
+    </div>
+
+</body>
+</html>

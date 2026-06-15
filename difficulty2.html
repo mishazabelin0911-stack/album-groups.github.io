@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Выбор</title>
+    <style>
+        body {
+            background-color: #6699ea; 
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 40px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            letter-spacing: 2px;
+        }
+
+        .buttons-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr; 
+            gap: 20px;
+            width: 100%;
+        }
+
+        @media (max-width: 600px) {
+            .buttons-grid {
+                grid-template-columns: 1fr; 
+            }
+        }
+
+        /* Стили для кнопок-действий */
+        .diff-btn-action {
+            color: white;
+            padding: 15px 25px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            display: block;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            border: 2px solid rgba(255,255,255,0.2);
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .diff-btn-action:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+            border-color: rgba(255,255,255,0.5);
+        }
+
+        .btn-easy { background: #00ff08; }       
+        .btn-hard { background: #ff0000; }       
+        .btn-secret { background: #8a2be2; }     
+        .btn-random { background: #ffa500; }    
+
+        footer {
+            margin-top: auto;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .note {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            max-width: 400px;
+            line-height: 1.4;
+        }
+
+        a.back-btn {
+            text-decoration: none;
+            background: transparent;
+            color: #ff9a9e;
+            border: 2px solid #ff9a9e;
+            padding: 10px 30px;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1rem;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        a.back-btn:hover {
+            background: #ff9a9e;
+            color: #8A2A2D;
+            box-shadow: 0 5px 15px rgba(255, 154, 158, 0.4);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1 id="student-title">Выберите уровень сложности</h1>
+
+        <div class="buttons-grid">
+            <div id="btn-game-easy" class="diff-btn-action btn-easy">Лёгкий (твой любимый предмет)</div>
+            <div id="btn-game-hard" class="diff-btn-action btn-hard">Сложный (кто лучший)</div>
+            <!-- Изменили текст на более понятный, но логика та же -->
+            <div id="btn-my-profile" class="diff-btn-action btn-secret">📂 Мой профиль (Отзывы)</div>
+            <div id="btn-review-read" class="diff-btn-action btn-random">Читать о преподах</div>
+        </div>
+    </div>
+
+    <footer>
+        <p class="note">
+            <strong>Примечание:</strong> ты зашёл как нищий студент. <br>
+            Я скоро узнаю кое что)
+        </p>
+        <a href="index.html" class="back-btn">← В главное меню</a>
+    </footer>
+
+    <script>
+        // 1. Получаем имя из ссылки (?student=Имя)
+        const urlParams = new URLSearchParams(window.location.search);
+        const studentName = urlParams.get('student');
+
+        // 2. Меняем заголовок, если имя есть
+        if (studentName) {
+            document.getElementById('student-title').textContent = `Профиль: ${studentName}`;
+        } else {
+            console.warn('Имя студента не передано. Кнопки будут заблокированы.');
+        }
+
+        // Функция для создания правильной ссылки с именем
+        function makeLink(path) {
+            if (!studentName) return '#'; 
+            return `${path}?student=${encodeURIComponent(studentName)}`;
+        }
+
+        // Универсальная функция настройки кнопки
+        function setupButton(id, path) {
+            const btn = document.getElementById(id);
+            if (!btn) return;
+
+            if (studentName) {
+                btn.style.cursor = 'pointer';
+                btn.addEventListener('click', () => {
+                    window.location.href = makeLink(path);
+                });
+            } else {
+                // Если имени нет, блокируем кнопку
+                btn.style.opacity = '0.5';
+                btn.style.cursor = 'not-allowed';
+                btn.title = 'Сначала выберите студента в главном меню';
+                
+                // Опционально: можно добавить обработчик, который просто показывает алерт
+                btn.addEventListener('click', () => alert('Сначала выберите студента!'));
+            }
+        }
+
+        // --- НАСТРОЙКА КНОПОК ---
+        
+        // Лёгкий уровень -> game1.html
+        setupButton('btn-game-easy', 'game1.html');
+        
+        // Сложный уровень -> game2.html
+        setupButton('btn-game-hard', 'game2.html');
+        
+        // МОЙ ПРОФИЛЬ (БЕЗ ПАРОЛЯ) -> сразу на страницу с отзывами (game4.html)
+        // Замени 'game4.html' на нужное имя файла, если оно другое
+        setupButton('btn-my-profile', 'game4.html'); 
+        
+        // Читать о преподах -> review-read.html
+        setupButton('btn-review-read', 'game3.html');
+    </script>
+</body>
+</html>

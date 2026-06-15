@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Сазонова В.С.</title>
+    <style>
+        body { 
+            background-color: #c8e6c9; 
+            font-family: 'Comic Sans MS', cursive; 
+            margin: 0; 
+            padding: 0; 
+            min-height: 100vh; 
+            color: #333; 
+            position: relative;
+            overflow: hidden; /* Скрываем вылезающие за край объекты */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* --- Слой с объектами по литературе --- */
+        .bg-lit {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none; /* Чтобы клики проходили сквозь объекты */
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .lit-item {
+            position: absolute;
+            color: rgba(0, 0, 0, 0.95);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.4);
+            font-weight: bold;
+            font-size: 1.1rem;
+            white-space: nowrap;
+            opacity: 0.8;
+            user-select: none;
+            animation-name: fallDown;
+            animation-iteration-count: infinite;
+            animation-timing-function: linear;
+            transform-origin: center;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 5px 10px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        /* Разные параметры для каждого объекта */
+        .l1 { animation-duration: 6s; animation-delay: 0s; top: -10%; left: 5%; font-size: 1.2rem; }
+        .l2 { animation-duration: 8s; animation-delay: 2s; top: -15%; left: 20%; font-size: 1rem; transform: rotate(15deg); }
+        .l3 { animation-duration: 7s; animation-delay: 4s; top: -20%; left: 35%; font-size: 1.3rem; }
+        .l4 { animation-duration: 9s; animation-delay: 6s; top: -10%; left: 50%; font-size: 1.4rem; transform: rotate(-20deg); }
+        .l5 { animation-duration: 5s; animation-delay: 1s; top: -25%; left: 65%; font-size: 1.1rem; }
+        .l6 { animation-duration: 10s; animation-delay: 3s; top: -15%; left: 80%; font-size: 1.5rem; transform: rotate(25deg); }
+        .l7 { animation-duration: 7s; animation-delay: 5s; top: -30%; left: 15%; font-size: 1.2rem; }
+        .l8 { animation-duration: 8s; animation-delay: 7s; top: -20%; left: 40%; font-size: 1.3rem; transform: rotate(-30deg); }
+        .l9 { animation-duration: 6s; animation-delay: 2s; top: -35%; left: 70%; font-size: 1.1rem; }
+        .l10 { animation-duration: 9s; animation-delay: 4s; top: -10%; left: 90%; font-size: 1.4rem; }
+        .l11 { animation-duration: 7s; animation-delay: 6s; top: -25%; left: 25%; font-size: 1.2rem; transform: rotate(35deg); }
+        .l12 { animation-duration: 8s; animation-delay: 8s; top: -15%; left: 55%; font-size: 1.3rem; }
+        .l13 { animation-duration: 6s; animation-delay: 3s; top: -40%; left: 10%; font-size: 1.1rem; }
+        .l14 { animation-duration: 10s; animation-delay: 5s; top: -20%; left: 30%; font-size: 1.5rem; transform: rotate(-40deg); }
+        .l15 { animation-duration: 7s; animation-delay: 7s; top: -30%; left: 60%; font-size: 1.2rem; }
+        .l16 { animation-duration: 8s; animation-delay: 9s; top: -10%; left: 85%; font-size: 1.3rem; transform: rotate(45deg); }
+        .l17 { animation-duration: 6s; animation-delay: 4s; top: -45%; left: 20%; font-size: 1.1rem; }
+        .l18 { animation-duration: 9s; animation-delay: 6s; top: -25%; left: 45%; font-size: 1.4rem; }
+        .l19 { animation-duration: 7s; animation-delay: 8s; top: -35%; left: 75%; font-size: 1.2rem; transform: rotate(-50deg); }
+        .l20 { animation-duration: 8s; animation-delay: 10s; top: -15%; left: 95%; font-size: 1.3rem; }
+        .l21 { animation-duration: 6s; animation-delay: 5s; top: -50%; left: 5%; font-size: 1.1rem; transform: rotate(55deg); }
+        .l22 { animation-duration: 10s; animation-delay: 12s; top: -20%; left: 50%; font-size: 1.6rem; transform: rotate(-60deg); }
+
+        @keyframes fallDown {
+            from {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(110vh) rotate(360deg); /* Улетает вниз и крутится */
+                opacity: 0.3;
+            }
+        }
+
+        /* --- Основной контент --- */
+        .profile-container { 
+            background: white; 
+            border: 4px solid #4caf50; 
+            border-radius: 20px; 
+            padding: 40px; 
+            text-align: center; 
+            max-width: 600px; 
+            width: 90%; 
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2); 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center; 
+            position: relative;
+            z-index: 10; /* Поверх объектов */
+            backdrop-filter: blur(5px);
+        }
+        
+        .photo-circle { 
+            width: 200px; 
+            height: 200px; 
+            border-radius: 50%; 
+            overflow: hidden; 
+            margin-bottom: 20px; 
+            border: 3px solid #4caf50; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            background: #eee; 
+        }
+        .photo-circle img { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+        }
+        h1 { 
+            color: #2e7d32; 
+            font-size: 2.2rem; 
+            margin-bottom: 10px; 
+            text-shadow: 2px 2px 0 #fff; 
+        }
+        .subject-badge { 
+            background: #ffeb3b; 
+            color: #000; 
+            padding: 5px 15px; 
+            border-radius: 15px; 
+            font-weight: bold; 
+            margin-bottom: 25px; 
+            font-size: 0.9rem; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .bio-content { 
+            font-size: 1.25rem; 
+            line-height: 1.6; 
+            color: #444; 
+            margin-bottom: 30px; 
+            text-align: center; 
+        }
+        .back-link { 
+            padding: 12px 30px; 
+            background: #4caf50; 
+            color: white; 
+            text-decoration: none; 
+            border-radius: 50px; 
+            font-weight: bold; 
+            font-size: 1.1rem; 
+            transition: background 0.3s, transform 0.2s; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            display: inline-block;
+        }
+        .back-link:hover { 
+            background: #2e7d32;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Слой с объектами по литературе -->
+    <div class="bg-lit">
+        <div class="lit-item l1">📖 Классика</div>
+        <div class="lit-item l2">✍️ Пушкин А.С.</div>
+        <div class="lit-item l3">🎭 Лермонтов М.Ю.</div>
+        <div class="lit-item l4">🕰️ Толстой Л.Н.</div>
+        <div class="lit-item l5">🐈 Булгаков М.А.</div>
+        <div class="lit-item l6">🦢 Достоевский Ф.М.</div>
+        <div class="lit-item l7">📜 Гоголь Н.В.</div>
+        <div class="lit-item l8">🖋️ Чехов А.П.</div>
+        <div class="lit-item l9">🎩 Серебряный век</div>
+        <div class="lit-item l10">📚 Школьная программа</div>
+        <div class="lit-item l11">📝 Сочинение</div>
+        <div class="lit-item l12">📖 Анализ текста</div>
+        <div class="lit-item l13">🗣️ Выразительное чтение</div>
+        <div class="lit-item l14">💭 Образ героя</div>
+        <div class="lit-item l15">🎭 Драматургия</div>
+        <div class="lit-item l16">📖 Поэзия</div>
+        <div class="lit-item l17">📝 Эссе</div>
+        <div class="lit-item l18">📖 Сюжет и композиция</div>
+        <div class="lit-item l19">💭 Художественные средства</div>
+        <div class="lit-item l20">📖 Литературные направления</div>
+        <div class="lit-item l21">📖 Герои произведений</div>
+        <div class="lit-item l22">«Открываем книгу!» 🎉</div>
+    </div>
+
+    <!-- Основной контент -->
+    <div class="profile-container">
+        <!-- Если файла нет, появится заглушка с правильным именем -->
+        <div class="photo-circle">
+            <img src="Сазонова.jpg" alt="Фото" onerror="this.src='https://via.placeholder.com/200x200?text=В.С.+Сазонова'">
+        </div>
+        <h1>Сазонова Вероника Сергеевна</h1>
+        <span class="subject-badge">Литература</span>
+        <div class="bio-content">Учитель литературы с большим стажем, которая умеет оживлять страницы классики. С теплом говорит о Булгакове, не любит Маяковского, и любит шаколадки.</div>
+        <a href="game3.html" class="back-link">←Назад в галерею</a>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Оставить отзыв преподавателю</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f4f7f6; margin: 0; padding: 20px; display: flex; justify-content: center; }
+        .container { background: white; width: 100%; max-width: 500px; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: #2c3e50; margin-bottom: 25px; }
+        p#target-teacher { text-align: center; font-weight: bold; color: #764ba2; font-size: 1.1rem; margin-bottom: 20px; background: #eef2f5; padding: 10px; border-radius: 8px; }
+        label { display: block; margin-top: 15px; font-weight: 600; color: #555; font-size: 0.9rem; }
+        
+        /* Звезды */
+        .stars-container { display: flex; gap: 10px; justify-content: center; margin-top: 5px; cursor: pointer; }
+        .star { font-size: 2rem; transition: color 0.2s; user-select: none; }
+        .star.active { color: #ffc107; }
+        .star:hover { color: #ffc107; opacity: 0.7; }
+
+        input[type="text"], textarea { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-family: inherit; font-size: 1rem; }
+        textarea { resize: vertical; min-height: 120px; }
+        button { margin-top: 25px; width: 100%; padding: 15px; background-color: #4caf50; color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: background 0.3s; text-transform: uppercase; }
+        button:hover { background-color: #43a047; }
+        button:disabled { background-color: #ccc; cursor: not-allowed; }
+        .status-message { margin-top: 15px; padding: 10px; border-radius: 5px; text-align: center; display: none; }
+        .success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        #rating-value { display: none; }
+        .loader { text-align: center; color: #666; font-style: italic; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Оставить отзыв преподавателю</h2>
+        <p id="target-teacher">Загрузка...</p>
+
+        <form id="reviewForm">
+            <label for="author-name">Ваше имя:</label>
+            <input type="text" id="author-name" placeholder="Например: Иван Иванов" required>
+
+            <label>Оценка (нажмите на звёзды):</label>
+            <div class="stars-container" id="stars">
+                <span class="star" data-value="1">★</span>
+                <span class="star" data-value="2">★</span>
+                <span class="star" data-value="3">★</span>
+                <span class="star" data-value="4">★</span>
+                <span class="star" data-value="5">★</span>
+            </div>
+            <input type="hidden" id="rating-value" value="0">
+
+            <label for="review-text">Ваш комментарий:</label>
+            <textarea id="review-text" placeholder="Напишите, что вам понравилось..." required></textarea>
+
+            <button type="submit" id="submitBtn">Отправить отзыв</button>
+            
+            <div class="status-message success" id="successMsg">Спасибо! Отзыв сохранен.</div>
+            <div class="status-message error" id="errorMsg"></div>
+            <div class="loader" id="loader" style="display:none;">Сохранение данных на сервере...</div>
+        </form>
+    </div>
+
+    <script>
+        // ================= НАСТРОЙКИ JSONBIN =================
+        const JSONBIN_ID = '6a2ed6e8da38895dfebf5c82'; 
+        const JSONBIN_KEY = '$2a$10$wXjoLOCv3EYDESgytpkDYOv7P8ZPv7VKUo3pzuf9w5XVWT7xtHsW6';
+        // =====================================================
+
+        const urlParams = new URLSearchParams(window.location.search);
+        // Пытаемся получить имя из параметра teacher или student
+        let teacherNameRaw = urlParams.get('teacher') || urlParams.get('student');
+        
+        if (!teacherNameRaw) {
+            document.getElementById('target-teacher').textContent = "Ошибка: Имя преподавателя не указано в ссылке";
+            document.getElementById('reviewForm').style.display = 'none';
+        } else {
+            // Декодируем URL, если имя было закодировано (пробелы -> %20)
+            const teacherName = decodeURIComponent(teacherNameRaw);
+            document.getElementById('target-teacher').textContent = teacherName;
+        }
+
+        // Логика звезд
+        const stars = document.querySelectorAll('.star');
+        const ratingInput = document.getElementById('rating-value');
+
+        stars.forEach(star => {
+            star.addEventListener('click', () => {
+                const value = star.getAttribute('data-value');
+                ratingInput.value = value;
+                updateStarsUI(value);
+            });
+            star.addEventListener('mouseover', () => updateStarsUI(star.getAttribute('data-value')));
+        });
+
+        starsContainer.addEventListener('mouseout', () => {
+             // Опционально: можно вернуть состояние до наведения, но обычно оставляют выбор
+        });
+
+        function updateStarsUI(value) {
+            stars.forEach((s, index) => {
+                if (index < value) s.classList.add('active');
+                else s.classList.remove('active');
+            });
+        }
+
+        // Обработка отправки
+        document.getElementById('reviewForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const author = document.getElementById('author-name').value.trim();
+            const rating = parseInt(ratingInput.value);
+            const text = document.getElementById('review-text').value.trim();
+
+            const submitBtn = document.getElementById('submitBtn');
+            const successMsg = document.getElementById('successMsg');
+            const errorMsg = document.getElementById('errorMsg');
+            const loader = document.getElementById('loader');
+
+            // Сброс сообщений
+            successMsg.style.display = 'none';
+            errorMsg.style.display = 'none';
+
+            if (!rating || rating === 0) {
+                showError("Пожалуйста, поставьте оценку!");
+                return;
+            }
+            if (!text) {
+                showError("Поле комментария не может быть пустым.");
+                return;
+            }
+
+            // Блокировка интерфейса
+            submitBtn.disabled = true;
+            loader.style.display = 'block';
+
+            try {
+                // 1. Получаем текущие данные
+                const getResponse = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_ID}`, {
+                    method: 'GET',
+                    headers: {
+                        'X-Master-Key': JSONBIN_KEY,
+                        'Accept': 'application/json'
+                    }
+                });
+
+                if (!getResponse.ok) throw new Error('Ошибка сети при чтении данных (код ' + getResponse.status + ')');
+                
+                const data = await getResponse.json();
+                const db = data.record; 
+
+                // Проверка структуры
+                if (!db || !db.teachers) {
+                    throw new Error('Неверная структура базы данных. Убедитесь, что есть массив "teachers".');
+                }
+
+                // 2. Ищем преподавателя
+                // Используем findIndex, чтобы найти точное совпадение имени
+                const teacherIndex = db.teachers.findIndex(t => t.name === teacherName);
+                
+                if (teacherIndex === -1) {
+                    console.log("Доступные преподаватели в БД:", db.teachers.map(t=>t.name));
+                    throw new Error(`Преподаватель "${teacherName}" не найден в базе. Проверьте написание имени.`);
+                }
+
+                const targetTeacher = db.teachers[teacherIndex];
+
+                // 3. Формируем новый отзыв
+                const newReview = {
+                    author: author,
+                    rating: rating, // Сюда попадает число от 1 до 5
+                    text: text,
+                    date: new Date().toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' })
+                };
+
+                // Инициализируем массив отзывов, если его нет
+                if (!targetTeacher.reviews) {
+                    targetTeacher.reviews = [];
+                }
+                
+                // Добавляем отзыв
+                targetTeacher.reviews.push(newReview);
+
+                // 4. Отправляем обновленные данные обратно
+                const putResponse = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_ID}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Master-Key': JSONBIN_KEY
+                    },
+                    body: JSON.stringify(db)
+                });
+
+                if (!putResponse.ok) {
+                    if (putResponse.status === 429) throw new Error('Слишком много запросов к серверу (лимит JSONBin). Попробуйте позже.');
+                    const errText = await putResponse.text();
+                    throw new Error('Ошибка сервера при сохранении: ' + errText);
+                }
+
+                // Успех!
+                successMsg.style.display = 'block';
+                
+                setTimeout(() => {
+                    // Перенаправление обратно на страницу преподавателя
+                    // Важно: имя должно быть закодировано для URL
+                    window.location.href = `teacher-page.html?teacher=${encodeURIComponent(teacherName)}`; 
+                }, 2000);
+
+            } catch (error) {
+                console.error('Ошибка сохранения:', error);
+                showError(error.message);
+            } finally {
+                submitBtn.disabled = false;
+                loader.style.display = 'none';
+            }
+        });
+
+        function showError(msg) {
+            const errorMsg = document.getElementById('errorMsg');
+            errorMsg.textContent = msg;
+            errorMsg.style.display = 'block';
+        }
+    </script>
+</body>
+</html>

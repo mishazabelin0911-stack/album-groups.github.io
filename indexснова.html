@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Так сказать альбом группы ССА9-125П</title>
+    <style>
+        /* СБРАСЫВАЕМ ОТСТУПЫ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', 'Chalkboard SE', cursive;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* --- АНИМАЦИЯ ФОНА (ПЕРЕЛИВАНИЕ) --- */
+        .background-gradient {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            background: linear-gradient(-45deg, #8E2DE2, #4A00E0, #00A7FF, #8E2DE2);
+            background-size: 400% 400%;
+            animation: gradient-flow 15s ease infinite;
+        }
+
+        @keyframes gradient-flow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        /* ------------------------------------- */
+
+        /* --- ОБЩИЕ СТИЛИ ДЛЯ КВАДРАТОВ --- */
+        .flying-square, .flying-square-2 {
+            width: 160px;       /* Чуть увеличили для эффекта масштаба при полете издалека */
+            height: 160px;
+            position: absolute;
+            border-radius: 20px; /* Чуть больше скругление */
+            box-shadow: 0 0 40px rgba(255, 59, 59, 0.9);
+            pointer-events: none; /* Чтобы не мешали кликать */
+            z-index: -1;
+            border: 4px solid white;
+            will-change: transform; /* Оптимизация анимации (летает плавнее) */
+        }
+
+        /* --- ПЕРВЫЙ КВАДРАТ (Старт ОЧЕНЬ слева) --- */
+        .flying-square {
+            background-color: #ff3b3b;
+            /* Задержка 0с, летит сразу */
+            animation: fly-arc-left 10s infinite ease-in-out;
+        }
+
+        @keyframes fly-arc-left {
+            0% {
+                /* Старт далеко слева (-150%) и высоко сверху (-50%) */
+                transform: translate(-150%, -50%) rotate(-20deg);
+                opacity: 0.5;
+            }
+            30% {
+                /* Поднимается еще выше перед дугой */
+                transform: translate(20%, -80%) rotate(0deg);
+                opacity: 1;
+            }
+            50% {
+                /* Высшая точка дуги прямо над кнопками */
+                transform: translate(50%, -60%) rotate(15deg); 
+                opacity: 0.9;
+            }
+            70% {
+                /* Спуск */
+                transform: translate(80%, -20%) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                /* Улетает далеко вправо за экран (150%) */
+                transform: translate(150%, -50%) rotate(20deg);
+                opacity: 0.5;
+            }
+        }
+
+        /* --- ВТОРОЙ КВАДРАТ (Старт ОЧЕНЬ справа) --- */
+        .flying-square-2 {
+            background-color: #d32f2f; /* Темно-красный, чтобы отличался */
+            /* Задержка 5 секунд, чтобы летел навстречу первому */
+            animation: fly-arc-right 10s infinite ease-in-out 5s; 
+        }
+
+        @keyframes fly-arc-right {
+            0% {
+                /* Старт далеко справа (150%) и высоко сверху (-50%) */
+                transform: translate(150%, -50%) rotate(20deg);
+                opacity: 0.5;
+            }
+            30% {
+                /* Поднимается выше */
+                transform: translate(80%, -80%) rotate(0deg);
+                opacity: 1;
+            }
+            50% {
+                /* Высшая точка над кнопками (летит в другую сторону) */
+                transform: translate(50%, -60%) rotate(-15deg); 
+                opacity: 0.9;
+            }
+            70% {
+                /* Спуск */
+                transform: translate(20%, -20%) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                /* Улетает далеко влево за экран (-150%) */
+                transform: translate(-150%, -50%) rotate(-20deg);
+                opacity: 0.5;
+            }
+        }
+        /* ---------------------------------- */
+
+        /* КОНТЕЙНЕР ДЛЯ ССЫЛОК */
+        .links-container {
+            text-align: center;
+            z-index: 10;
+            max-width: 600px;
+            width: 90%;
+            position: relative;
+        }
+
+        h1 {
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+            letter-spacing: 2px;
+        }
+
+        .link-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        /* СТИЛЬ ССЫЛОК (КАК КНОПКИ) */
+        a.fun-link {
+            display: block;
+            padding: 20px 10px;
+            background: rgba(255, 255, 255, 0.95);
+            color: #333;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            border: none;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        /* ЭФФЕКТЫ ПРИ НАВЕДЕНИИ */
+        a.fun-link:hover {
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+            background: #fff;
+            color: #d32f2f;
+        }
+
+        a.fun-link:active {
+            transform: translateY(2px);
+        }
+
+        /* Разные цвета для разнообразия */
+        .link-1 { background: linear-gradient(45deg, #ff9a9e, #fad0c4); }
+        .link-2 { background: linear-gradient(45deg, #a18cd1, #fbc2eb); }
+        .link-3 { background: linear-gradient(45deg, #84fab0, #8fd3f4); }
+        .link-4 { background: linear-gradient(45deg, #fccb90, #d57eeb); }
+
+        /* Цвета текста при наведении */
+        .link-1:hover { color: #c2185b; }
+        .link-2:hover { color: #7b1fa2; }
+        .link-3:hover { color: #00796b; }
+        .link-4:hover { color: #af247e; }
+
+    </style>
+</head>
+<body>
+
+    <!-- Фон -->
+    <div class="background-gradient"></div>
+
+    <!-- Первый квадрат (Старт очень далеко слева) -->
+    <div class="flying-square"></div>
+
+    <!-- Второй квадрат (Старт очень далеко справа) -->
+    <div class="flying-square-2"></div>
+
+    <!-- Контент -->
+    <div class="links-container">
+        <h1>Что вы хотите вспомнить?</h1>
+        <div class="link-grid">
+            <a href="index.html" class="fun-link link-1">Первый курс</a>
+            <a href="#" class="fun-link link-2">Второй курс</a>
+            <a href="#" class="fun-link link-3">Третий курс</a>
+            <a href="#" class="fun-link link-4">Четвёртый курс</a>
+        </div>
+    </div>
+
+</body>
+</html>

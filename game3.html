@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Галерея учителей</title>
+    <style>
+        body { 
+            background-color: #c8e6c9; 
+            font-family: 'Comic Sans MS', cursive; 
+            margin: 0; padding: 0; min-height: 100vh; color: #333; 
+            position: relative; overflow: hidden; display: flex; justify-content: center; align-items: flex-start;
+        }
+        /* --- Фон с формулами (как на странице преподавателя) --- */
+        .bg-formulas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; overflow: hidden; }
+        .formula-item { position: absolute; color: rgba(0, 0, 0, 0.6); font-weight: bold; font-size: 1.2rem; text-shadow: 0 0 10px rgba(0,0,0,0.2); opacity: 0.7; user-select: none; white-space: nowrap; animation-name: floatUp; animation-iteration-count: infinite; animation-timing-function: linear; }
+        .f1 { animation-duration: 8s; animation-delay: 0s; top: 100%; left: 10%; font-size: 1rem; }
+        .f2 { animation-duration: 12s; animation-delay: 2s; top: 100%; left: 30%; font-size: 1.5rem; }
+        .f3 { animation-duration: 9s; animation-delay: 4s; top: 100%; left: 50%; font-size: 1.1rem; }
+        .f4 { animation-duration: 15s; animation-delay: 6s; top: 100%; left: 70%; font-size: 1.3rem; }
+        .f5 { animation-duration: 10s; animation-delay: 1s; top: 100%; left: 90%; font-size: 1.4rem; }
+        .f6 { animation-duration: 11s; animation-delay: 3s; top: 100%; left: 20%; font-size: 1.6rem; }
+        .f7 { animation-duration: 13s; animation-delay: 5s; top: 100%; left: 40%; font-size: 1.2rem; }
+        .f8 { animation-duration: 14s; animation-delay: 7s; top: 100%; left: 80%; font-size: 1.7rem; }
+
+        @keyframes floatUp {
+            from { transform: translateY(0) rotate(0deg) scale(1); opacity: 0; }
+            to { transform: translateY(-110vh) rotate(360deg) scale(0.8); opacity: 0.3; }
+        }
+
+        /* --- Обертка для контента (чтобы не перекрывать фон формулами) --- */
+        .gallery-wrapper {
+            position: relative;
+            z-index: 10;
+            width: 90%;
+            max-width: 1000px;
+            padding-top: 40px;
+            box-sizing: border-box;
+        }
+
+        h1 { 
+            text-align: center; 
+            color: #2e7d32; 
+            text-shadow: 2px 2px 0 #fff; 
+            margin-bottom: 30px; 
+            font-size: 2.5rem;
+            font-family: inherit;
+        }
+
+        .gallery-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); 
+            gap: 25px; 
+        }
+        .teacher-link { text-decoration: none; color: inherit; display: block; }
+        
+        /* Стили карточки (адаптированы под общий стиль) */
+        .card { 
+            background: white; 
+            border: 3px solid #4caf50; 
+            border-radius: 15px; 
+            overflow: hidden; 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1); 
+            transition: all 0.3s ease; 
+            height: 320px; 
+            display: flex; 
+            flex-direction: column; 
+            position: relative; 
+        }
+        .card:hover { 
+            transform: translateY(-10px); 
+            box-shadow: 0 20px 30px rgba(0,0,0,0.2); 
+            border-color: #ff9800; 
+        }
+        .photo-area { 
+            width: 100%; 
+            height: 220px; 
+            background-color: #eee; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            position: relative; 
+            overflow: hidden; 
+        }
+        .photo-area img { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+            transition: transform 0.5s ease; 
+        }
+        .card:hover .photo-area img { transform: scale(1.1); }
+        .name-area { 
+            padding: 15px; 
+            text-align: center; 
+            font-weight: bold; 
+            line-height: 1.4; 
+            flex-grow: 1; 
+            color: #333;
+        }
+        .view-btn { 
+            margin-top: auto; 
+            padding: 8px 15px; 
+            background: #4caf50; 
+            color: white; 
+            border: none; 
+            border-radius: 20px; 
+            cursor: pointer; 
+            font-family: inherit; 
+            font-size: 0.9rem; 
+            opacity: 0; 
+            transition: opacity 0.3s; 
+            pointer-events: none;
+            font-weight: bold;
+        }
+        .card:hover .view-btn { opacity: 1; }
+        .no-photo-text { color: #888; font-size: 0.8rem; }
+
+        /* Кнопка-ссылка на главную (в стиле страницы преподавателя) */
+        .home-link {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #2e7d32;
+            color: white;
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-weight: bold;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            transition: transform 0.2s, box-shadow 0.2s;
+            z-index: 20;
+            display: inline-block;
+            text-align: center;
+            font-family: inherit;
+        }
+        .home-link:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Слой с прыгающими формулами (фон) -->
+    <div class="bg-formulas">
+        <div class="formula-item f1">01001000</div>
+        <div class="formula-item f2">HEX: #FF5733</div>
+        <div class="formula-item f3">x = x + 1</div>
+        <div class="formula-item f4">if (win) { crown++; }</div>
+        <div class="formula-item f5">10101010</div>
+        <div class="formula-item f6">console.log("Hello")</div>
+        <div class="formula-item f7">A = πr² (ну почти)</div>
+        <div class="formula-item f8">0xFF & 0x0F</div>
+    </div>
+
+    <!-- Основной контент галереи -->
+    <div class="gallery-wrapper">
+        <h1>Наши учителя 📸</h1>
+        <div class="gallery-grid">
+            
+            <!-- КАРТОЧКА 1: Слобоздина Н.И. -->
+            <a href="teacher-page.html?teacher=Слобоздина+Наталья+Ивановна" class="teacher-link">
+                <div class="card">
+                    <div class="photo-area"><img src="https://via.placeholder.com/300x300?text=Слобоздина+Н.И." alt="Слобоздина"></div>
+                    <div class="name-area">Слобоздина Наталья Ивановна</div>
+                    <button class="view-btn">Подробнее</button>
+                </div>
+            </a>
+
+            <!-- КАРТОЧКА 2: Никитина Д.В. -->
+            <a href="teacher-page.html?teacher=Никитина+Дарья+Владимировна" class="teacher-link">
+                <div class="card">
+                    <div class="photo-area"><img src="Никитина.jpg" alt="Никитина"></div>
+                    <div class="name-area">Никитина Дарья Владимировна</div>
+                    <button class="view-btn">Подробнее</button>
+                </div>
+            </a>
+
+            <!-- КАРТОЧКА 3: Рейтер Е.А. -->
+            <a href="teacher-page.html?teacher=Рейтер+Елена+Анатольевна" class="teacher-link">
+                <div class="card">
+                    <div class="photo-area"><img src="Рейтер.jpg" alt="Рейтер"></div>
+                    <div class="name-area">Рейтер Елена Анатольевна</div>
+                    <button class="view-btn">Подробнее</button>
+                </div>
+            </a>
+
+            <!-- КАРТОЧКА 4: Бормотова Е.С. -->
+            <a href="teacher-page.html?teacher=Бормотова+Елена+Сергеевна" class="teacher-link">
+                <div class="card">
+                    <div class="photo-area"><img src="Бормотова.jpg" alt="Бормотова"></div>
+                    <div class="name-area">Бормотова Елена Сергеевна</div>
+                    <button class="view-btn">Подробнее</button>
+                </div>
+            </a>
+
+            <!-- КАРТОЧКА 5: Куличёва Г.В. -->
+            <a href="teacher-page.html?teacher=Куличёва+Галина+Васильевна" class="teacher-link">
+                <div class="card">
+                    <div class="photo-area"><img src="Галина.jpg" alt="Куличёва"></div>
+                    <div class="name-area">Куличёва Галина Васильевна</div>
+                    <button class="view-btn">Подробнее</button>
+                </div>
+            </a>
+
+            <!-- КАРТОЧКА 6: Новиков Д.В. -->
+            <a href="teacher-page.html?teacher=Новиков+Денис+Васильевич" class="teacher-link">
+                <div class="card">
+                    <div class="photo-area"><img src="Новиков.jpg" alt="Новиков"></div>
+                    <div class="name-area">Новиков Денис Васильевич</div>
+                    <button class="view-btn">Подробнее</button>
+                </div>
+            </a>
+
+            <!-- КАРТОЧКА 7: Сахарова А.М. -->
+            <a href="teacher-page.html?teacher=Сахарова+Алла+Михайловна" class="teacher-link">
+                <div class="card">
+                    <div class="photo-area"><img src="Ала.jpg" alt="Сахарова"></div>
+                    <div class="name-area">Сахарова Алла Михайловна</div>
+                    <button class="view-btn">Подробнее</button>
+                </div>
+            </a> 
+
+            <!-- КАРТОЧКА 8: Рамазанов Р.М. -->
+            <a href="teacher-page.html?teacher=Рамазанов+Рамазан+Маратович" class="teacher-link">
+                <div class="card">
+                    <div class="photo-area"><img src="https://via.placeholder.com/300x300?text=Рамазанов+Р.М." alt="Рамазанов"></div>
+                    <div class="name-area">Рамазанов Рамазан Маратович</div>
+                    <button class="view-btn">Подробнее</button>
+                </div>
+            </a>
+
+            <!-- КАРТОЧКА 9: Буленко М.В. -->
+            <a href="teacher-page.html?teacher=Буленко+Мария+Валерьевна" class="teacher-link">
+                <div class="card">
+                    <div class="photo-area"><img src="Буленко.jpg" alt="Буленко"></div>
+                    <div class="name-area">Буленко Мария Валерьевна</div>
+                    <button class="view-btn">Подробнее</button>
+                </div>
+            </a>
+
+            <!-- КАРТОЧКА 10: Алпатова И.Д. -->
+            <a href="teacher-page.html?teacher=Алпатова+Ирина+Дмитриевна" class="teacher-link">
+                <div class="card">
+                    <div class="photo-area"><img src="Алпатова.jpg" alt="Алпатова"></div>
+                    <div class="name-area">Алпатова Ирина Дмитриевна</div>
+                    <button class="view-btn">Подробнее</button>
+                </div>
+            </a>
+
+            <!-- КАРТОЧКА 11: Сазонова В.С. -->
+            <a href="teacher-page.html?teacher=Сазонова+Вероника+Сергеевна" class="teacher-link">
+                <div class="card">
+                    <div class="photo-area"><img src="https://via.placeholder.com/300x300?text=Сазонова+В.С." alt="Сазонова"></div>
+                    <div class="name-area">Сазонова Вероника Сергеевна</div>
+                    <button class="view-btn">Подробнее</button>
+                </div>
+            </a>
+
+            <!-- КАРТОЧКА 12: Качурин И.А. -->
+            <a href="teacher-page.html?teacher=Качурин+Игорь+Александрович" class="teacher-link">
+                <div class="card">
+                    <div class="photo-area"><img src="Качурин.jpg" alt="Качурин"></div>
+                    <div class="name-area">Качурин Игорь Александрович</div>
+                    <button class="view-btn">Подробнее</button>
+                </div>
+            </a>
+
+        </div>
+    </div>
+
+    <!-- Кнопка-ссылка на главную -->
+    <a href="index.html" class="home-link">← На главную</a>
+</body>
+</html>
